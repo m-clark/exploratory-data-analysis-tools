@@ -1,0 +1,54 @@
+---
+title: "Exploratory Data Analysis"
+description: |
+  A Demo of Tools
+author:
+  - name: Michael Clark
+    url: https://m-clark.github.io
+date: '`r Sys.Date()`'
+# preview: 
+output:
+  distill::distill_article:
+    self_contained: false
+    toc: true
+    css: distill.css
+bibliography: cites.bib
+tags: []
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  comment = NA,
+  R.options = list(width = 120),
+  cache.rebuild = FALSE,
+  cache = FALSE,
+  fig.align = 'center',
+  fig.asp = .7,
+  dev = 'svglite',
+  dev.args = list(bg = 'transparent')
+)
+library(tidyverse)
+library(kableExtra)
+library(scico)
+kable_df <- function(..., digits=3) {
+  kable(..., digits=digits) %>% 
+    kable_styling(full_width = F)
+}
+rnd = tidyext::rnd
+```
+
+# Introduction
+
+In R there  are a lot of tools out there for exploring data.  However, in consulting I still most people using base R's table and summary functions, followed by a lot of work to get the result in a more presentable format.  My own frustrations led to me creating a mini package ([tidyext](https://m-clark.github.io/tidyext/)) for personal use in this area.  While that suits me fine, there are tools that can go much further with little effort. Recently, Staniak & Biecek @staniak2019landscape wrote an article in the R Journal exploring several of such packages, so I thought I'd try them out for myself, and take others along with me for that ride.
+
+# Packages
+
+
+# Exercises
+
+
+
+

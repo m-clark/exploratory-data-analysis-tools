@@ -1,0 +1,206 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono|Roboto+Condensed|Open+Sans+Condensed:300|Lato|Lora|Fira+Sans|Fira+Code");
+@import url(https://cdn.rawgit.com/tonsky/FiraCode/1.205/distr/fira_code.css);
+
+
+
+/* Import ET Book styles
+   adapted from https://github.com/edwardtufte/et-book/blob/gh-pages/et-book.css */
+
+
+
+@font-face {
+  font-family: "et-book";
+  src: url("et-book/et-book-roman-line-figures/et-book-roman-line-figures.eot");
+  src: url("et-book/et-book-roman-line-figures/et-book-roman-line-figures.eot?#iefix") format("embedded-opentype"), url("et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff") format("woff"), url("et-book/et-book-roman-line-figures/et-book-roman-line-figures.ttf") format("truetype"), url("et-book/et-book-roman-line-figures/et-book-roman-line-figures.svg#etbookromanosf") format("svg");
+  font-weight: normal;
+  font-style: normal
+}
+
+@font-face {
+  font-family: "et-book";
+  src: url("et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.eot");
+  src: url("et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.eot?#iefix") format("embedded-opentype"), url("et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.woff") format("woff"), url("et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.ttf") format("truetype"), url("et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.svg#etbookromanosf") format("svg");
+  font-weight: normal;
+  font-style: italic
+}
+
+@font-face {
+  font-family: "et-book";
+  src: url("et-book/et-book-bold-line-figures/et-book-bold-line-figures.eot");
+  src: url("et-book/et-book-bold-line-figures/et-book-bold-line-figures.eot?#iefix") format("embedded-opentype"), url("et-book/et-book-bold-line-figures/et-book-bold-line-figures.woff") format("woff"), url("et-book/et-book-bold-line-figures/et-book-bold-line-figures.ttf") format("truetype"), url("et-book/et-book-bold-line-figures/et-book-bold-line-figures.svg#etbookromanosf") format("svg");
+  font-weight: bold;
+  font-style: normal
+}
+
+@font-face {
+  font-family: "et-book-roman-old-style";
+  src: url("et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.eot");
+  src: url("et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.eot?#iefix") format("embedded-opentype"), url("et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.woff") format("woff"), url("et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.ttf") format("truetype"), url("et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.svg#etbookromanosf") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+d-title {
+  grid-column-gap: 64px;   /* change width of display; see p also */
+}
+
+d-title h1 {
+  font-family: Audiowide, "Press Start 2P", Alegreya, Monoton, "Frank Ruhl Libre", et-book, Roboto, Sans;
+  font-variant: small-caps;
+  /*font-variant: small-caps; */
+  font-weight: 300;
+  color: #990024CC; /*  #fffff8;*/
+}
+
+/* subtitle */
+d-title p {
+  font-family: Roboto, Sans;
+  font-weight: 300;
+  color: rgba(0, 0, 0, 0.6);  /* aside color */
+  width: 50%;
+}
+
+
+
+.author .name{
+  color: #990024;
+}
+
+d-byline .authors-affiliations {
+  grid-column-end: span 2;
+  grid-template-columns: 1.2fr 2fr;
+  margin-bottom: 1em;
+}
+
+body {
+  background-color: #fffff8;
+}
+
+p {
+  font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 300;
+}
+
+d-article h1, h2, h3, h4, h5 {
+  font-family: 'Open Sans Condensed', 'Roboto Condensed', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue",et-book,  Arial, sans-serif;
+  font-weight: 400;
+  color: #990024;
+}
+
+d-article {
+  color: #585858;
+  grid-column-gap: 64px;
+}
+
+d-article table th, d-article table td {
+    font-size: 15px;
+    padding: 2px 8px;
+    color: #990024;
+}
+
+.d-code {
+  font-family: 'Roboto Mono', 'Fira Code', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', 'Courier New', monospace;
+}
+
+
+pre.text-output {
+  color: #404040FF;
+}
+
+blockquote {
+  font-size: 80%;
+}
+
+em, .emph {
+  color: #0077d6;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.pack {
+  color: #990071; /*#AC9CFF #e41a1c*/
+  font-weight: 500;
+}
+
+.func {
+  color: #007020;   /*#007199 #00CBB6; #984ea3; can just use `` instead*/
+  font-weight: bold;
+}
+
+.objclass {
+  color:  #947100;  /*#AAB400 #4daf4a; #FFC5D0*/
+  font-weight: 500;
+}
+
+/* to fix aside; see issue #39 https://github.com/rstudio/distill/issues/39*/
+@media(min-width:768px) {
+  aside {
+      margin-top: -00px;
+      margin-bottom: -500px;
+  }
+}
+
+.logo {
+  display:inline;
+  vertical-align: middle;
+}
+
+strong {
+  color: #990024; /* #ff5500; */
+  font-weight: 300;
+}
+
+/* change bullet color */
+ul {
+  list-style: none; /* Remove default bullets */
+}
+
+ul li::before {
+  content: "\2022";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
+  color: #990024AA; /* Change the color */
+  font-weight: bold; /* If you want it to be bold */
+  font-size: 50%;
+  vertical-align: top;
+  display: inline-block; /* Needed to add space between the bullet and the text */
+  width: 1em; /* Also needed for space (tweak if needed) */
+  margin-left: -1em; /* Also needed for space (tweak if needed) */
+}
+
+/* links and effects */
+p a {
+    color: #007199; /*03b3ff */
+    background-image: linear-gradient(180deg,transparent 90%, #990024AA 0);
+    background-size: 0 100%;
+    background-repeat: no-repeat;
+    text-decoration: none;
+    -webkit-transition: background-size .4s ease;
+    -moz-transition: background-size .4s ease;
+    -ms-transition: background-size .4s ease;
+    -o-transition: background-size .4s ease;
+    transition: background-size .4s ease;
+    border-bottom: 0px solid;
+}
+
+
+td a, li a {
+    color: #007199;
+    background-image: linear-gradient(180deg,transparent 90%, #990024AA 0);
+    background-size: 0 100%;
+    background-repeat: no-repeat;
+    text-decoration: none;
+    -webkit-transition: background-size .4s ease;
+    -moz-transition: background-size .4s ease;
+    -ms-transition: background-size .4s ease;
+    -o-transition: background-size .4s ease;
+    transition: background-size .4s ease;
+    border-bottom: 0px solid;
+}
+
+
+
+d-article a:hover {
+    text-decoration: none;
+    border-bottom: none;
+    background-size: 100% 100%;
+    cursor: pointer;
+}
