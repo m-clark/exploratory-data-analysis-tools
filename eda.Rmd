@@ -18,7 +18,7 @@ tags: []
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-  echo = TRUE,
+  echo = FALSE,
   message = FALSE,
   warning = FALSE,
   comment = NA,
@@ -30,21 +30,143 @@ knitr::opts_chunk$set(
   dev = 'svglite',
   dev.args = list(bg = 'transparent')
 )
+
 library(tidyverse)
 library(kableExtra)
 library(scico)
+
 kable_df <- function(..., digits=3) {
   kable(..., digits=digits) %>% 
     kable_styling(full_width = F)
 }
+
 rnd = tidyext::rnd
 ```
 
 # Introduction
 
-In R there  are a lot of tools out there for exploring data.  However, in consulting I still most people using base R's table and summary functions, followed by a lot of work to get the result in a more presentable format.  My own frustrations led to me creating a mini package ([tidyext](https://m-clark.github.io/tidyext/)) for personal use in this area.  While that suits me fine, there are tools that can go much further with little effort. Recently, Staniak & Biecek @staniak2019landscape wrote an article in the R Journal exploring several of such packages, so I thought I'd try them out for myself, and take others along with me for that ride.
+In R there are many tools available for exploring data.  However, in consulting I still see a lot of people using base R's <span class="func" style = "">table</span> and <span class="func" style = "">summary</span> functions, followed by a lot of work to get the result in a more presentable format.  My own frustrations led to me creating a mini package ([tidyext](https://m-clark.github.io/tidyext/)) for personal use in this area.  While that suits me fine, there are tools that can go much further with little effort. Recently, Staniak & Biecek @staniak2019landscape wrote an article in the R Journal exploring several of such packages, so I thought I'd try them out for myself, and take others along with me for that ride.
 
 # Packages
+
+```{r load-data}
+pkg_downloads = read_rds('data/cran_downloads_pkgs.rds')
+monthly_stats = read_rds('data/monthly_stats.rds')
+```
+
+I've updated the article's table 1, basically as it would have a year's worth of downloads.
+
+```{r table-1}
+pkg_downloads %>% 
+  group_by(package) %>% 
+  summarise(
+    downloads = sum(count),
+    debut = min(date)
+    ) %>% 
+  arrange(desc(downloads)) %>% 
+  kable_df()
+```
+
+A more informative assessment of usage would be in average monthly downloads.
+
+```{r avg-monthly-downloads}
+monthly_stats %>% 
+  distinct(package, average_monthly_downloads) %>% 
+  arrange(desc(average_monthly_downloads)) %>% 
+  kable_df()
+```
+
+Here is a visualization of their growth over time.
+
+
+```{r cran-packs, echo=FALSE}
+monthly_stats %>%
+  ggplot(aes(x = year_mo, y = monthly_downloads, color = package)) +
+  geom_hline(aes(yintercept = 5000), color = 'gray92') +
+  ggbump::geom_bump(size = .5, alpha = .5, show.legend = F) +
+  # ggforce::geom_bspline0(size = .5) +
+  ggrepel::geom_text_repel(
+    aes(label = package),
+    size = 2,
+    show.legend = F,
+    data = . %>%
+      group_by(package) %>%
+      filter(year == last(year), month  == last(month))
+  ) +
+  scico::scale_color_scico_d() +
+  guides(x = guide_axis(n.dodge = 2)) +
+  scale_x_discrete(breaks = paste0(2016:2020, c('-Jan', '-Jun'))) +
+  scale_y_continuous(breaks = c(1000, 2500, 5000, 10000, 15000)) +
+  labs(x = '', y = '', subtitle = "CRAN monthly downloads") +
+  visibly::theme_clean()
+```
+
+
+
+## Selected packages
+
+I'll outline my reasons for selecting some packages to explore and not others. These reasons are somewhat, but not necessarily, arbitrary, and may leave out some viable newer packages.  For the data scenario, I am assuming messy data of the sort that might have hundreds of columns of mixed data types, potentially with lots of missingness, attributes that are only applicable to subsets of the data (e.g. branching logic in surveys), etc.[^nottoomessy]
+
+Here is my criteria for selection:
+
+
+- Relatively more widely used
+- I've used it before and want to revisit it
+- I've heard of it before and want to try it
+- I'm familiar with the package author's work
+- Appears to be in active development (especially on GitHub) according to modern programming standards
+- Good documentation
+
+Things I don't care much about:
+
+- Anything that requires actual analysis.  I have no interest in bivariate statistical tests, PCA, imputation.  It likely isn't appropriate and I could do better via other means.
+- Visuals, though fundamental for data exploration, can usually be done better with concerted effort, so this wouldn't be a big factor for me. However, if it saves me some time for initial presentations or something like that, all the better.
+
+
+In the end, I would like a package that is well will make common tasks easier for me and potentially save me time in creating reports/presentation.
+
+
+Staniak & Biecek note two general phases of data exploration, each with specific tasks.
+
+- Understanding
+    - Description
+    - Validity
+    - Exploration
+
+- Preparation
+    - Cleaning
+    - Derived Attributes
+
+In the first, I will focus on tools for understanding, particularly description and validity, as they refer to exploration tasks as visualization, which is a perk, but something I'm more inclined to do myself.
+
+I'm definitely less interested in the preparation.  'Cleaning' in the article refers to mean/median imputation, something I've never bothered to do for reasons that have been noted in the statistical literature for a long time.  The other transformations are easy and should be explicitly documented.  Furthermore, in creating derived attributes, things like category merging and standardization depend on the subset of the data used, so it would be better to be more explicit than automatic.  Also, if things like an automated PCA is viable for your situation, it probably is simple data (i.e. all variables of the same type), in which case, most of these tools probably won't add much value to you.
+
+So with that in mind here are the ones I will explore (in alphabetical order):
+
+- arsenal
+- DataExplorer
+- dataMaid
+- SmartEDA
+- summarytools
+- visdat
+
+# The data
+
+```{r}
+noiris::heart_disease
+```
+
+
+
+
+# arsenal
+# DataExplorer
+# dataMaid
+# SmartEDA
+# summarytools
+# visdat
+
+
 
 
 # Exercises
@@ -52,3 +174,4 @@ In R there  are a lot of tools out there for exploring data.  However, in consul
 
 
 
+[^nottoomessy]: However, for our demonstration I'll be using something a little more wieldy.

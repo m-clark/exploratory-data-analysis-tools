@@ -25,8 +25,8 @@
   
   
   <!--  https://schema.org/Article -->
-  <meta property="article:published" itemprop="datePublished" content="2020-06-29"/>
-  <meta property="article:created" itemprop="dateCreated" content="2020-06-29"/>
+  <meta property="article:published" itemprop="datePublished" content="2020-06-30"/>
+  <meta property="article:created" itemprop="dateCreated" content="2020-06-30"/>
   <meta name="article:author" content="Michael Clark"/>
   
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
@@ -42,16 +42,15 @@
   
   <!--/radix_placeholder_meta_tags-->
   
-  <meta name="citation_reference" content="citation_title=The landscape of r packages for automated exploratory data analysis;citation_publication_date=2019;citation_author=Mateusz Staniak;citation_author=Przemyslaw Biecek"/>
   <!--radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output","bibliography","tags"]}},"value":[{"type":"character","attributes":{},"value":["Exploratory Data Analysis"]},{"type":"character","attributes":{},"value":["A Demo of Tools\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Michael Clark"]},{"type":"character","attributes":{},"value":["https://m-clark.github.io"]}]}]},{"type":"character","attributes":{},"value":["2020-06-29"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","toc","css"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["distill.css"]}]}]},{"type":"character","attributes":{},"value":["cites.bib"]},{"type":"list","attributes":{},"value":[]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output","bibliography","tags"]}},"value":[{"type":"character","attributes":{},"value":["Exploratory Data Analysis"]},{"type":"character","attributes":{},"value":["A Demo of Tools\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Michael Clark"]},{"type":"character","attributes":{},"value":["https://m-clark.github.io"]}]}]},{"type":"character","attributes":{},"value":["2020-06-30"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","toc","css"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["distill.css"]}]}]},{"type":"character","attributes":{},"value":["cites.bib"]},{"type":"list","attributes":{},"value":[]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["cites.bib","distill.css","eda_files/bowser-1.9.3/bowser.min.js","eda_files/distill-2.2.21/template.v2.js","eda_files/jquery-1.11.3/jquery.min.js","eda_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["cites.bib","code/process_cran_downloads.R","data/cran_downloads_pkgs.rds","data/monthly_stats.rds","distill.css","eda_files/bowser-1.9.3/bowser.min.js","eda_files/distill-2.2.21/template.v2.js","eda_files/figure-html5/cran-packs-1.svg","eda_files/jquery-1.11.3/jquery.min.js","eda_files/kePrint-0.0.1/kePrint.js","eda_files/webcomponents-2.0.0/webcomponents.js","RJ-2019-033.pdf"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -939,6 +938,7 @@
   </script>
   
   <!--/radix_placeholder_distill-->
+  <script src="eda_files/kePrint-0.0.1/kePrint.js"></script>
   <script src="eda_files/jquery-1.11.3/jquery.min.js"></script>
   <script src="eda_files/bowser-1.9.3/bowser.min.js"></script>
   <script src="eda_files/webcomponents-2.0.0/webcomponents.js"></script>
@@ -955,7 +955,7 @@
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Exploratory Data Analysis","description":"A Demo of Tools","authors":[{"author":"Michael Clark","authorURL":"https://m-clark.github.io","affiliation":"&nbsp;","affiliationURL":"#"}],"publishedDate":"2020-06-29T00:00:00.000-04:00","citationText":"Clark, 2020"}
+{"title":"Exploratory Data Analysis","description":"A Demo of Tools","authors":[{"author":"Michael Clark","authorURL":"https://m-clark.github.io","affiliation":"&nbsp;","affiliationURL":"#"}],"publishedDate":"2020-06-30T00:00:00.000-04:00","citationText":"Clark, 2020"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -972,7 +972,7 @@
 <div class="d-byline">
   Michael Clark <a href="https://m-clark.github.io" class="uri">https://m-clark.github.io</a> 
   
-<br/>2020-06-29
+<br/>2020-06-30
 </div>
 
 <div class="d-article">
@@ -980,20 +980,411 @@
 <nav class="d-toc" id="TOC">
 <ul>
 <li><a href="#introduction">Introduction</a></li>
-<li><a href="#packages">Packages</a></li>
+<li><a href="#packages">Packages</a><ul>
+<li><a href="#selected-packages">Selected packages</a></li>
+</ul></li>
+<li><a href="#the-data">The data</a></li>
+<li><a href="#arsenal">arsenal</a></li>
+<li><a href="#dataexplorer">DataExplorer</a></li>
+<li><a href="#datamaid">dataMaid</a></li>
+<li><a href="#smarteda">SmartEDA</a></li>
+<li><a href="#summarytools">summarytools</a></li>
+<li><a href="#visdat">visdat</a></li>
 <li><a href="#exercises">Exercises</a></li>
 </ul>
 </nav>
 <hr class="d-toc-separator"/>
 <h1 id="introduction">Introduction</h1>
-<p>In R there are a lot of tools out there for exploring data. However, in consulting I still most people using base R’s table and summary functions, followed by a lot of work to get the result in a more presentable format. My own frustrations led to me creating a mini package (<a href="https://m-clark.github.io/tidyext/">tidyext</a>) for personal use in this area. While that suits me fine, there are tools that can go much further with little effort. Recently, Staniak &amp; Biecek <span class="citation" data-cites="staniak2019landscape">Staniak and Biecek (<a href="#ref-staniak2019landscape" role="doc-biblioref">2019</a>)</span> wrote an article in the R Journal exploring several of such packages, so I thought I’d try them out for myself, and take others along with me for that ride.</p>
+<p>In R there are many tools available for exploring data. However, in consulting I still see a lot of people using base R’s <span class="func" style="">table</span> and <span class="func" style="">summary</span> functions, followed by a lot of work to get the result in a more presentable format. My own frustrations led to me creating a mini package (<a href="https://m-clark.github.io/tidyext/">tidyext</a>) for personal use in this area. While that suits me fine, there are tools that can go much further with little effort. Recently, Staniak &amp; Biecek <span class="citation" data-cites="staniak2019landscape">Staniak and Biecek (<a href="#ref-staniak2019landscape" role="doc-biblioref">2019</a>)</span> wrote an article in the R Journal exploring several of such packages, so I thought I’d try them out for myself, and take others along with me for that ride.</p>
 <h1 id="packages">Packages</h1>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<p>I’ve updated the article’s table 1, basically as it would have a year’s worth of downloads.</p>
+<div class="layout-chunk" data-layout="l-body">
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+package
+</th>
+<th style="text-align:right;">
+downloads
+</th>
+<th style="text-align:left;">
+debut
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+summarytools
+</td>
+<td style="text-align:right;">
+197854
+</td>
+<td style="text-align:left;">
+2014-08-11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DataExplorer
+</td>
+<td style="text-align:right;">
+184836
+</td>
+<td style="text-align:left;">
+2016-03-01
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+visdat
+</td>
+<td style="text-align:right;">
+183303
+</td>
+<td style="text-align:left;">
+2017-07-11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+funModeling
+</td>
+<td style="text-align:right;">
+101535
+</td>
+<td style="text-align:left;">
+2016-02-07
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+arsenal
+</td>
+<td style="text-align:right;">
+75596
+</td>
+<td style="text-align:left;">
+2016-12-30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dlookr
+</td>
+<td style="text-align:right;">
+44085
+</td>
+<td style="text-align:left;">
+2018-04-27
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dataMaid
+</td>
+<td style="text-align:right;">
+42595
+</td>
+<td style="text-align:left;">
+2017-01-02
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+inspectdf
+</td>
+<td style="text-align:right;">
+22794
+</td>
+<td style="text-align:left;">
+2019-04-24
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+xray
+</td>
+<td style="text-align:right;">
+19260
+</td>
+<td style="text-align:left;">
+2017-11-22
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RtutoR
+</td>
+<td style="text-align:right;">
+16203
+</td>
+<td style="text-align:left;">
+2016-03-12
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ExPanDaR
+</td>
+<td style="text-align:right;">
+15319
+</td>
+<td style="text-align:left;">
+2018-05-11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+exploreR
+</td>
+<td style="text-align:right;">
+14362
+</td>
+<td style="text-align:left;">
+2016-02-10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SmartEDA
+</td>
+<td style="text-align:right;">
+13542
+</td>
+<td style="text-align:left;">
+2018-04-06
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+explore
+</td>
+<td style="text-align:right;">
+9938
+</td>
+<td style="text-align:left;">
+2019-05-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>A more informative assessment of usage would be in average monthly downloads.</p>
+<div class="layout-chunk" data-layout="l-body">
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+package
+</th>
+<th style="text-align:right;">
+average_monthly_downloads
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+visdat
+</td>
+<td style="text-align:right;">
+5091.750
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DataExplorer
+</td>
+<td style="text-align:right;">
+3554.538
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+summarytools
+</td>
+<td style="text-align:right;">
+2786.676
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+funModeling
+</td>
+<td style="text-align:right;">
+1915.755
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+arsenal
+</td>
+<td style="text-align:right;">
+1758.047
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dlookr
+</td>
+<td style="text-align:right;">
+1632.778
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+inspectdf
+</td>
+<td style="text-align:right;">
+1519.600
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dataMaid
+</td>
+<td style="text-align:right;">
+1014.167
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+explore
+</td>
+<td style="text-align:right;">
+709.857
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+xray
+</td>
+<td style="text-align:right;">
+601.875
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ExPanDaR
+</td>
+<td style="text-align:right;">
+589.192
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SmartEDA
+</td>
+<td style="text-align:right;">
+501.556
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RtutoR
+</td>
+<td style="text-align:right;">
+311.596
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+exploreR
+</td>
+<td style="text-align:right;">
+270.981
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Here is a visualization of their growth over time.</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="eda_files/figure-html5/cran-packs-1.svg" width="624" style="display: block; margin: auto;" /></p>
+</div>
+<h2 id="selected-packages">Selected packages</h2>
+<p>I’ll outline my reasons for selecting some packages to explore and not others. These reasons are somewhat, but not necessarily, arbitrary, and may leave out some viable newer packages. For the data scenario, I am assuming messy data of the sort that might have hundreds of columns of mixed data types, potentially with lots of missingness, attributes that are only applicable to subsets of the data (e.g. branching logic in surveys), etc.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>Here is my criteria for selection:</p>
+<ul>
+<li>Relatively more widely used</li>
+<li>I’ve used it before and want to revisit it</li>
+<li>I’ve heard of it before and want to try it</li>
+<li>I’m familiar with the package author’s work</li>
+<li>Appears to be in active development (especially on GitHub) according to modern programming standards</li>
+<li>Good documentation</li>
+</ul>
+<p>Things I don’t care much about:</p>
+<ul>
+<li>Anything that requires actual analysis. I have no interest in bivariate statistical tests, PCA, imputation. It likely isn’t appropriate and I could do better via other means.</li>
+<li>Visuals, though fundamental for data exploration, can usually be done better with concerted effort, so this wouldn’t be a big factor for me. However, if it saves me some time for initial presentations or something like that, all the better.</li>
+</ul>
+<p>In the end, I would like a package that is well will make common tasks easier for me and potentially save me time in creating reports/presentation.</p>
+<p>Staniak &amp; Biecek note two general phases of data exploration, each with specific tasks.</p>
+<ul>
+<li>Understanding
+<ul>
+<li>Description</li>
+<li>Validity</li>
+<li>Exploration</li>
+</ul></li>
+<li>Preparation
+<ul>
+<li>Cleaning</li>
+<li>Derived Attributes</li>
+</ul></li>
+</ul>
+<p>In the first, I will focus on tools for understanding, particularly description and validity, as they refer to exploration tasks as visualization, which is a perk, but something I’m more inclined to do myself.</p>
+<p>I’m definitely less interested in the preparation. ‘Cleaning’ in the article refers to mean/median imputation, something I’ve never bothered to do for reasons that have been noted in the statistical literature for a long time. The other transformations are easy and should be explicitly documented. Furthermore, in creating derived attributes, things like category merging and standardization depend on the subset of the data used, so it would be better to be more explicit than automatic. Also, if things like an automated PCA is viable for your situation, it probably is simple data (i.e. all variables of the same type), in which case, most of these tools probably won’t add much value to you.</p>
+<p>So with that in mind here are the ones I will explore (in alphabetical order):</p>
+<ul>
+<li>arsenal</li>
+<li>DataExplorer</li>
+<li>dataMaid</li>
+<li>SmartEDA</li>
+<li>summarytools</li>
+<li>visdat</li>
+</ul>
+<h1 id="the-data">The data</h1>
+<div class="layout-chunk" data-layout="l-body">
+<pre><code>
+# A tibble: 189 x 9
+   iso_a3 iso_n3 name_0           score score_ranked label           un_region wb_region            population_2019_mil…
+   &lt;chr&gt;   &lt;int&gt; &lt;chr&gt;            &lt;dbl&gt;        &lt;int&gt; &lt;chr&gt;           &lt;chr&gt;     &lt;chr&gt;                               &lt;dbl&gt;
+ 1 QAT       634 Qatar             4.97            1 Extremely High… Asia      Middle East &amp; North…                 2.74
+ 2 ISR       376 Israel            4.82            2 Extremely High… Asia      Middle East &amp; North…                 8.58
+ 3 LBN       422 Lebanon           4.82            3 Extremely High… Asia      Middle East &amp; North…                 6.07
+ 4 IRN       364 Iran              4.57            4 Extremely High… Asia      Middle East &amp; North…                82.8 
+ 5 JOR       400 Jordan            4.56            5 Extremely High… Asia      Middle East &amp; North…                10.1 
+ 6 LBY       434 Libya             4.55            6 Extremely High… Africa    Middle East &amp; North…                 6.57
+ 7 KWT       414 Kuwait            4.43            7 Extremely High… Asia      Middle East &amp; North…                 4.25
+ 8 SAU       682 Saudi Arabia      4.35            8 Extremely High… Asia      Middle East &amp; North…                34.1 
+ 9 ERI       232 Eritrea           4.33            9 Extremely High… Africa    Sub-Saharan Africa                   5.31
+10 ARE       784 United Arab Emi…  4.26           10 Extremely High… Asia      Middle East &amp; North…                 9.68
+# … with 179 more rows</code></pre>
+</div>
+<h1 id="arsenal">arsenal</h1>
+<h1 id="dataexplorer">DataExplorer</h1>
+<h1 id="datamaid">dataMaid</h1>
+<h1 id="smarteda">SmartEDA</h1>
+<h1 id="summarytools">summarytools</h1>
+<h1 id="visdat">visdat</h1>
 <h1 id="exercises" class="unnumbered">Exercises</h1>
 <div id="refs" class="references" role="doc-bibliography">
 <div id="ref-staniak2019landscape">
 <p>Staniak, Mateusz, and Przemyslaw Biecek. 2019. “The Landscape of R Packages for Automated Exploratory Data Analysis.” <em>The R Journal</em>. <a href="https://journal.r-project.org/archive/2019/RJ-2019-033/index.html">https://journal.r-project.org/archive/2019/RJ-2019-033/index.html</a>.</p>
 </div>
 </div>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>However, for our demonstration I’ll be using something a little more wieldy.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
