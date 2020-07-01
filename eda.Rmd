@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
   comment = NA,
   R.options = list(width = 120),
   cache.rebuild = FALSE,
-  cache = FALSE,
+  cache = TRUE,
   fig.align = 'center',
   fig.asp = .7,
   dev = 'svglite',
@@ -46,7 +46,9 @@ rnd = tidyext::rnd
 
 ## Introduction
 
-In R there are many tools available for exploring data.  However, in consulting I still see a lot of people using base R's <span class="func" style = "">table</span> and <span class="func" style = "">summary</span> functions, followed by a lot of work to get the result in a more presentable format.  My own frustrations led to me creating a mini package ([tidyext](https://m-clark.github.io/tidyext/)) for personal use in this area.  While that suits me fine, there are tools that can go much further with little effort. Recently, Staniak & Biecek @staniak2019landscape wrote an article in the R Journal exploring several of such packages, so I thought I'd try them out for myself, and take others along with me for that ride.
+In R there are many tools available for exploring data.  However, in consulting I still see a lot of people using base R's <span class="func" style = "">table</span> and <span class="func" style = "">summary</span> functions, followed by a lot of work to get the result into a more presentable format.  My own frustrations led to me creating a package ([tidyext](https://m-clark.github.io/tidyext/)) for personal use in this area.  While that suits me fine, there are tools that can go much further with little effort. Recently, Staniak & Biecek @staniak2019landscape wrote an article in the R Journal exploring several of such packages, so I thought I'd try them out for myself, and take others along with me for that ride.
+
+Note that these are first impressions, I haven't really dived deeply into any of the packages, and may be missing some things. But that is also part of the point for this sort of thing.  It isn't a modeling package, and we have a good idea of what we want in EDA, so these should be easy to pick up and use.
 
 ## Packages
 
@@ -153,12 +155,13 @@ So with that in mind here are the ones I will explore (in alphabetical order):
 
 ## The Data
 
-I've chosen the heart_disease data available from the [UCI repository](https://archive.ics.uci.edu/ml/datasets/Heart+Disease). It contains a mixture of data types  It's been cleaned and I've additionally added some random missingness.
+I've chosen the heart_disease data available from the [UCI repository](https://archive.ics.uci.edu/ml/datasets/Heart+Disease) (object name `hd`). It contains a mixture of data types but isn't too unweildy, as it's already been cleaned and has few columns.  I've additionally added some random missingness, and created an `hd_sample` which has only a couple columns to cut down on the display.
 
 ```{r prep-data}
 hd = noiris::heart_disease
 hd_mat = as.matrix(hd)
 hd_mat[sample(prod(dim(hd)), .05*prod(dim(hd)))] = NA
+
 hd = as_tibble(hd_mat) %>% 
   mutate_at(
     vars(
@@ -176,12 +179,15 @@ hd = as_tibble(hd_mat) %>%
   mutate(id = 1:n()) %>% 
   select(id, everything())
 
+hd_sample = hd %>% 
+  select(age, cholesterol, resting_bp, sex, chest_pain_type)
+
 hd %>% 
   DT::datatable(options = list(dom='tp', scrollX=T), rownames = F)
 ```
 
 
-```{r set_echo_true}
+```{r set_echo_true, cache = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -194,7 +200,7 @@ meta-data size in RAM
 
 ### Preliminary
 
-To give a sense of what my preference is, consider my own functions. The following actually calls a separate numerical summary function as well as a categorical variable function, and both return 'tidy' data frames that can immediately be used for presentation (e.g. kableExtra) and visualization, and drilling down to only selections of the output.
+To give a sense of what my preference is, consider my own functions. The following actually calls a separate numerical summary function as well as a categorical variable function, and both return 'tidy' data frames that can immediately be used for presentation (e.g. kableExtra) and visualization (e.g. ggplot2), or drilling down to only selections of the output.
 
 ```{r tidyext, echo=TRUE}
 library(tidyext)
@@ -208,10 +214,10 @@ I also have options, such as the following.
 hd %>% 
   select(age, sex, heart_disease) %>% 
   describe_all(
-  digits = 1,
-  include_NAcat = TRUE,
+  digits = 2,
+  include_NAcat = FALSE,
   max_levels = 3,
-  include_numeric = TRUE,
+  include_numeric = TRUE,  # allows numeric variables with few levels
   sort_by_freq = TRUE,
   extra = TRUE
 )
@@ -234,8 +240,7 @@ The categorical variable functionality is very similar.
 hd %>% 
   cat_by(
     main_var  = chest_pain_type,
-    group_var = sex,
-    perc_by_group = TRUE
+    group_var = sex
   )
 ```
 
@@ -246,20 +251,25 @@ describe_all_num(hd) %>%
   kableExtra::kable()
 ```
 
-These serve most of my needs for initial peeking at the data.
+These serve most of my needs for initial peeking at the data.  They return a tibble/data.frame that makes for easy presentation and visualization.  The underlying code uses tidyverse and mostly adheres to standard programming conventions.  This is the same sort of thing I'm looking for.
+
 
 ### arsenal
 
-We begin alphabetically with the arsenal package.  Here we use table by for a generic summary as well as grouped summary. The result is markdown, so for presentation one must use `results='asis'`
+We begin alphabetically with the arsenal package.  Here we use tableby for a generic summary as well as grouped summary. The result is markdown, so for presentation one must use `results='asis'`.
 
 ```{r arsenal-table-by, echo = T, results='asis'}
 library(arsenal)
-hd %>% 
-  select(age, sex, heart_disease) %>% 
-  tableby(~., data = .) %>% 
+hd_sample %>%
+  tableby( ~ ., data = .) %>%
   summary()
-# summary(arsenal::freqlist(hd))
+
+hd_sample %>%
+  tableby(sex ~ ., data = .) %>%
+  summary()
 ```
+
+Here is an example of categorical-only output using freqlist.
 
 ```{r arsenal-cats, results='asis'}
 with(hd, table(sex, chest_pain_type)) %>% 
@@ -271,11 +281,11 @@ with(hd, table(sex, chest_pain_type)) %>%
 
 #### Pros
 
-The tableby summary is essentially a 'Table 1', which is an unfortunately named display of descriptive stats for a sample of a given study. My clients often want that, and I've actually used a package specifically geared towards that just to save me the headache (tableOne), so I definitely find that aspect useful.  However, Table 1's almost invariably have needless statistical output or analysis, and are not a model I would choose to go for.  As you can see, the layout is not going to be viable for more than a few variables, though it is common practice to present them that way in journal articles regardless of verbosity/legibility.
+The tableby summary is essentially a 'Table 1', which is an unfortunately named display of descriptive stats for a sample of a given study[^tableone]. My clients often want that, and I've actually used a package specifically geared towards that just to save me the headache (tableOne), so I definitely find that aspect useful.  However, Table 1's almost invariably have needless statistical output or analysis, and are not a model I would choose to go for.  As you can see, the layout is not going to be viable for more than a few variables, though it is common practice to present them that way in journal articles regardless of verbosity/legibility.
 
 #### Issues
 
-I'm not thrilled with markdown output, as I have little control over it, but it's fine.  Also, the default layout is not so succinct, and it appears it's trying to emulate functions like SAS's PROC FREQ, which is not a model for presentation in my opinion. One can use a function to write the output to html, but that's not something I want or need.
+I'm not thrilled with markdown output, as I have little control over it, but it's fine.  Also, the default layout is not so succinct, and it appears it's trying to emulate SAS functions, which are not models for presentation in my opinion. One can use a function to write the output to html, but that's not something I want or need, as I'd rather it just be amenable to the document I'm already creating, or create a report for me.  Lastly, I'm not crazy about using the <span class="func" style = "">summary</span> function to get the output.  It seems unlikely that if my goal is to automate parts of EDA that I'd want to use the underlying list objects, so using summary as an argument with default of TRUE would make more sense to me design-wise.
 
 
 ### DataExplorer
@@ -291,7 +301,7 @@ introduce(hd)
 It also can display this information visually in two different ways.  I like this, but can't say I'd ever have a reason to actually use it.
 
 ```{r data-explorer-plot_str}
-plot_str(list(hd, gapminder_2019))
+plot_str(list(hd = hd, gapminder = gapminder_2019))
 ```
 
 ```{r data-explorer-plot_intro}
@@ -301,7 +311,7 @@ plot_intro(hd)
 We can focus on the missingness.
 
 ```{r data-explorer-plot_missing}
-plot_missing(hd)
+plot_missing(hd_sample)
 ```
 
 It can also plot distributions, e.g. bar and histograms,
@@ -350,14 +360,189 @@ If the various options of output, or only some of them, appeals to you, they can
 <!-- ADD LINK -->
 
 ```{r data-explorer-report, eval=F}
-create_report(hd, output_dir = 'other_docs', output_file = 'data_explorer_report.html')
+create_report(
+  hd,
+  y = 'heart_disease',
+  output_dir   = 'other_docs',
+  output_file  = 'data_explorer_report.html',
+  report_title = 'My Data Description'
+)
+```
+
+
+#### Pros
+
+I think many would like at least some functionality in DataExplorer, as well as many of the visualizations.  The ease with which to generate a report should also be sufficient for anyone's personal use, and with some tweaking, presentation to others.  It also uses data.table under the hood, so likely can handle large data with efficiency.
+
+Not covered here, but DataExplorer also has functionality for feature processing and engineering, for example, collapsing sparse categories, dummy coding, etc.
+
+#### Issues
+
+The issues I have are pretty minor with this one aside from unnecessary statistical analysis and visualization choices.
+
+### SmartEDA
+
+I wanted to look at the SmartEDA package because the figure in the article was of a clean report.  Let's start our exploration with the basic ExpData function
+
+```{r smarteda-expdata}
+library(SmartEDA)
+ExpData(hd)
+```
+
+We can look at ExpNumStat to get some basic stats for numeric variables.
+
+```{r smarteda-expnumstat}
+ExpNumStat(hd, round = 1)
+```
+
+
+We can look at ExpNumStat to get some basic stats for grouped output also, and set various options.
+
+```{r smarteda-expnumstat-opts}
+ExpNumStat(
+  hd_sample,
+  by = "GA",
+  gp = "sex",
+  Qnt = c(.1, .9),
+  Outlier = TRUE,
+  round = 1
+)
+```
+
+
+There is also some visualization of relationships with a given target variable.
+
+```{r smarteda-ExpNumViz}
+ExpNumViz(hd_sample, target = 'cholesterol')
+```
+
+Here are the default categorical data summaries.  This is a nice and clean `data.frame` presentation.
+
+```{r smarteda-ExpCTable}
+ExpCTable(hd_sample) 
+```
+
+As there was with numeric variables, there is also visualization for the categorical variables.
+
+```{r smarteda-ExpCatViz}
+ExpCatViz(hd_sample) 
+```
+
+As far as reporting, smarteda provides this
+
+```{r smarteda-ExpReport, eval = F}
+ExpReport(
+  hd %>% select(-id),
+  theme = visibly::theme_clean(),
+  op_dir = 'other_docs/',
+  op_file = 'smarteda.html'
+)
 ```
 
 
 
-### SmartEDA
+#### Pros
+
+SmartEDA is fairly intuitive to use. It returns a data frame, and some of the less verbose output is quite ready to go.
+
+#### Issues
+
+A lot of this isn't very useful to me, such as parallel coordinate plots, 'outlier' analysis, etc.  I'm not crazy about the naming conventions, both for the functions and arguments (every single function begins with `Exp`, so why use it?). The default color schemes for some output is simply not viable.
+
+
 ### summarytools
+
+The summarytools package provides four main functions to work with, but I'm going to skip those and go straight to the tool that uses the key summary functions and puts it into a very nice presentation.
+
+
+```{r summarytools-dfsummary, results='asis', cache.rebuild=T}
+library(summarytools)
+
+dfSummary(
+  hd %>% select(-id),
+  varnumbers = FALSE,
+  round.digits = 2,
+  plain.ascii = FALSE,
+  style = "grid",
+  graph.magnif = .33,
+  valid.col = FALSE,
+  tmp.img.dir = "img"
+)
+```
+
+This is exactly what I want- basic, not overwhelming and redundant information, a usable data.frame, simple visualization that is all you need, basic categorical information. In one function, I have pretty much all I'd need, but with control to tweak as necessary.
+
+```{r summarytools-dfsummary-group-by, results='asis', cache.rebuild=T}
+library(summarytools)
+
+hd_sample %>% 
+  group_by(sex) %>% 
+  dfSummary(
+  varnumbers = FALSE,
+  round.digits = 2,
+  plain.ascii = FALSE,
+  na.col = FALSE,
+  style = "grid",
+  graph.magnif = .33,
+  valid.col = FALSE,
+  tmp.img.dir = "img"
+)
+```
+
+
+#### Pros
+#### Issues
+The only nitpicky stuff I have with this package is that ctable isn't useful to me, the numeric description is verbose
+
 ### visdat
+
+The package visdat is purely for visualization, and this includes missingness, correlation
+
+```{r visdat-missing}
+library(visdat)
+vis_dat(hd_sample)
+```
+
+
+We can look at variable types along with the missingness.  I like the integer/double mix, which might point to an issue if all the data should be integer valued.
+
+```{r visdat-guess}
+vis_guess(hd)
+```
+
+Visualization of the correlations, default is pairwise.  This is probably the cleanest we've seen so far of this type of plot, but there is no way to order it meaningfully.
+
+```{r visdat-cor}
+vis_cor(hd %>% select_if(is.numeric))
+```
+
+
+
+
+```{r visdat-expect}
+hd %>% 
+  select(sex) %>% 
+  vis_expect(expectation =  ~ .x == 'male')
+```
+
+We can also compare whole data sets.
+
+```{r visdat-compare}
+vis_compare(
+  hd_sample,
+  noiris::heart_disease %>% select(colnames(hd_sample)) %>% mutate_if(is.factor, as.character)
+)
+```
+
+
+
+#### Pros
+
+This package adds some useful functionality we haven't seen.  In addition, the underlying code adheres to open science standards.
+
+#### Issues
+
+This isn't for numeric description, so can only supplement typical EDA. You may have to do some pre-processing for some functions unlike with other tools (e.g. subsetting to numeric).
 
 ## Data Validity
 
@@ -365,11 +550,35 @@ create_report(hd, output_dir = 'other_docs', output_file = 'data_explorer_report
 ### janitor
 
 
+dlookr: pdf report only? bad base R vis
+smarteda: vignette code and typos do not inspire confidence
+
+
+## Summary
+
+```{r sumtable, eval = F}
+tibble(
+  Package = c('arsenal', 'DataExplorer', 'SmartEDA', 'summarytools', 'visdat'),
+  `Ready to use output` = c('', emo::ji('check'), emo::ji('check'), emo::ji('check'), emo::ji('check')),
+  `Coding Standards` = rep('', 5),
+  `Visualization` = rep('', 5),
+  `Report Generation` = rep('', 5),
+) %>% 
+  kable_df(align = 'lccc')
+```
+
+
+
+## Links
+https://mayoverse.github.io/arsenal/
+http://visdat.njtierney.com/
+
 ## Exercises
 
 
 
+[^tableone]: I see 'Table 1' used mostly by folks in medical fields, who subsequently place it as table 2, 3 or whatever as would normally be the case.
 
 [^nottoomessy]: However, for our demonstration I'll be using something a little more wieldy.
 
- [^cripdm]: To be honest, I wasn't familiar with the CRoss Industry Standard Process for Data Mining until reading the article citing it. I don't get the impression any particular methodology is actually consciously thought about by the vast majority of practicing data scientists, but it's useuful in providing a framework for the content here.
+ [^cripdm]: To be honest, I wasn't familiar with the CRoss Industry Standard Process for Data Mining until reading the article citing it. I don't get the impression any particular methodology is actually consciously thought about by the vast majority of practicing data scientists, but it's useful in providing a framework for the content here.
