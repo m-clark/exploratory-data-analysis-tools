@@ -1,5 +1,7 @@
 
-# Exploratory Data Analysis
+# IN PROGRESS
+
+## Exploratory Data Analysis
 
 This will be workshop content for exploratory data analysis. The
 inspiration is the following:

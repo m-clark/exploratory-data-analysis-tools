@@ -11,7 +11,7 @@ output:
   distill::distill_article:
     self_contained: false
     toc: true
-    css: distill.css
+css: distill.css
 bibliography: cites.bib
 tags: []
 ---
@@ -108,6 +108,8 @@ monthly_stats %>%
 
 ### Selected packages
 
+#### Arbitrary criteria
+
 I'll outline my reasons for selecting some packages to explore and not others. These reasons are somewhat, but not necessarily, arbitrary, and may leave out some viable newer packages.  For the data scenario, I am assuming messy data of the sort that might have hundreds of columns of mixed data types, potentially with lots of missingness, attributes that are only applicable to subsets of the data (e.g. branching logic in surveys), etc.[^nottoomessy]
 
 Here is my criteria for selection:
@@ -126,8 +128,9 @@ Things I'm not as concerned about:
 - Visuals, though fundamental for data exploration, can usually be done better with even a modicum of effort, so this wouldn't be a big factor for me, and some common ones are poor for communication (e.g. histograms). However, if it saves me some time for initial presentations or something like that, all the better.
 
 
-In the end, I would like a package that is well will make common tasks easier for me and potentially save me time in creating reports/presentation.
+In the end, I would like a package that is well put together and will make common tasks easier for me and potentially save me time in creating reports/presentation.
 
+#### Conceptual organization
 
 Staniak & Biecek note two general phases of data exploration, each with specific tasks, based on the CRISP-DM standard @wirth2000crisp [^cripdm].
 
@@ -140,15 +143,16 @@ Staniak & Biecek note two general phases of data exploration, each with specific
     - Cleaning
     - Derived Attributes
 
-In the first, I will focus on tools for understanding, particularly description and validity, as they refer to exploration tasks as visualization, which is a perk, but something I'm more inclined to do myself.
+In the first place, I will focus on tools for understanding, particularly description and validity, as they refer to exploration tasks solely as visualization, which is a perk, but something I'm more inclined to do myself.
 
-I'm definitely less interested in the preparation.  'Cleaning' in the article refers to mean/median imputation, something I've never bothered to do for reasons that have been noted in the statistical literature for a long time.  The other transformations are easy and should be explicitly documented.  Furthermore, in creating derived attributes, things like category merging and standardization depend on the subset of the data used, so it would be better to be more explicit than automatic.  Also, if things like an automated PCA is viable for your situation, it probably is simple data (i.e. all variables of the same type), in which case, most of these tools probably won't add much value to you.
+I'm definitely less interested in the preparation.  'Cleaning' in the article refers to mean/median imputation, something I've never bothered to do for reasons that have been noted in the statistical literature for a very long time.  The other transformations are easy, and probably should be explicitly documented in your code.  Furthermore, in creating derived attributes, things like category merging and standardization depend on the subset of the data used, so it would probably be better to be more explicit than automatic.  Also, if things like an automated PCA is viable for your situation, it probably is very simple data (i.e. all variables of the same type), in which case, most of these tools probably won't add much value to you anyway.
 
 So with that in mind here are the ones I will explore (in alphabetical order):
 
 - arsenal
 - DataExplorer
 - dataMaid
+- janitor
 - SmartEDA
 - summarytools
 - visdat
@@ -175,15 +179,13 @@ hd = as_tibble(hd_mat) %>%
       heart_disease
     ),
     as.numeric
-  ) %>% 
-  mutate(id = 1:n()) %>% 
-  select(id, everything())
+  ) 
 
 hd_sample = hd %>% 
   select(age, cholesterol, resting_bp, sex, chest_pain_type)
 
 hd %>% 
-  DT::datatable(options = list(dom='tp', scrollX=T), rownames = F)
+  DT::datatable(options = list(dom = 'tp', scrollX = T), rownames = F)
 ```
 
 
@@ -202,10 +204,10 @@ meta-data size in RAM
 
 To give a sense of what my preference is, consider my own functions. The following actually calls a separate numerical summary function as well as a categorical variable function, and both return 'tidy' data frames that can immediately be used for presentation (e.g. kableExtra) and visualization (e.g. ggplot2), or drilling down to only selections of the output.
 
-```{r tidyext, echo=TRUE}
+```{r tidyext}
 library(tidyext)
 
-describe_all(hd, extra = T)
+describe_all(hd, extra = T)  # also describe_all_num, describe_all_cat
 ```
 
 I also have options, such as the following.
@@ -256,7 +258,7 @@ These serve most of my needs for initial peeking at the data.  They return a tib
 
 ### arsenal
 
-We begin alphabetically with the arsenal package.  Here we use tableby for a generic summary as well as grouped summary. The result is markdown, so for presentation one must use `results='asis'`.
+We begin alphabetically with the arsenal package.  Here we use tableby for a generic summary as well as grouped summary. The result is markdown, so for presentation in an R Markdown document, one must use the chunk option `results='asis'`.
 
 ```{r arsenal-table-by, echo = T, results='asis'}
 library(arsenal)
@@ -277,15 +279,17 @@ with(hd, table(sex, chest_pain_type)) %>%
   summary()
 ```
 
+Other options include a function for doing pairwise comparisons for a repeated measure[^nopair], comparing datasets, and doing a bunch of bivariate regressions.
+
 
 
 #### Pros
 
-The tableby summary is essentially a 'Table 1', which is an unfortunately named display of descriptive stats for a sample of a given study[^tableone]. My clients often want that, and I've actually used a package specifically geared towards that just to save me the headache (tableOne), so I definitely find that aspect useful.  However, Table 1's almost invariably have needless statistical output or analysis, and are not a model I would choose to go for.  As you can see, the layout is not going to be viable for more than a few variables, though it is common practice to present them that way in journal articles regardless of verbosity/legibility.
+The tableby summary is essentially a 'Table 1', which is an unfortunately named display of descriptive stats for a sample of a given study[^tableone]. My clients often want that, and I've actually used a package specifically geared towards that just to save me the headache (tableOne), so I definitely find that aspect useful.  However, Table 1's almost invariably have needless statistical output or analysis, and are not a model for reporting that I would choose to go for.  As you can see, the layout is not going to be viable for more than a few variables, though it is common practice to present them that way in journal articles regardless of verbosity/legibility.
 
 #### Issues
 
-I'm not thrilled with markdown output, as I have little control over it, but it's fine.  Also, the default layout is not so succinct, and it appears it's trying to emulate SAS functions, which are not models for presentation in my opinion. One can use a function to write the output to html, but that's not something I want or need, as I'd rather it just be amenable to the document I'm already creating, or create a report for me.  Lastly, I'm not crazy about using the <span class="func" style = "">summary</span> function to get the output.  It seems unlikely that if my goal is to automate parts of EDA that I'd want to use the underlying list objects, so using summary as an argument with default of TRUE would make more sense to me design-wise.
+I'm not thrilled with markdown output, as I have little control over it, but it's fine.  Also, the default layout is not so succinct, and it appears it's trying to emulate SAS functions, which are not models for presentation in my opinion. One can use a function to write the output of a single table to html, but I'd rather it just be amenable to the document I'm already creating, or create a report for me of all tables.  Lastly, I'm not crazy about using the <span class="func" style = "">summary</span> function to get the output.  The underlying list objects are not 'print ready', so using summary as an argument with default of TRUE would make more sense to me design-wise.
 
 
 ### DataExplorer
@@ -300,22 +304,23 @@ introduce(hd)
 
 It also can display this information visually in two different ways.  I like this, but can't say I'd ever have a reason to actually use it.
 
-```{r data-explorer-plot_str}
-plot_str(list(hd = hd, gapminder = gapminder_2019))
-```
 
 ```{r data-explorer-plot_intro}
 plot_intro(hd)
 ```
 
-We can focus on the missingness.
+```{r data-explorer-plot_str}
+plot_str(list(hd = hd, gapminder = gapminder_2019))
+```
+
+
+We can focus on the missingness, which is nice, but I don't find a use for bar simple bar charts, as they actually make the single row of information harder to parse.
 
 ```{r data-explorer-plot_missing}
 plot_missing(hd_sample)
 ```
 
-It can also plot distributions, e.g. bar and histograms,
-
+It can also plot distributions, e.g. bar and histograms, for the actual values of the categorical/discrete variables.
 
 ```{r data-explorer-plot_bar}
 plot_bar(hd)
@@ -327,7 +332,6 @@ But this sort of thing only takes a couple lines of ggplot to do on your own, wh
 hd %>% 
   select_if(is.character) %>% 
   pivot_longer(everything(), names_to = 'variable', values_to = 'value') %>% 
-  drop_na() %>% 
   ggplot(aes(x = value)) +
   geom_bar() +
   coord_flip() +
@@ -335,7 +339,7 @@ hd %>%
 ```
 
 
-Similarly there are QQ plots, scatterplots and more. I always try to get people to try correlation plots in lieu of large correlation matrices, and DataExplorer provides this.  The nice thing is that it will automatically create indicator variables for levels of categorical variables, but beyond that there are issues.   For one, it's diagonal is reversed from the typical presentation of correlation matrices. If you don't drop the missing, the plot isn't very useful, because it will include NA as a factor level, but to its credit DataExplorer has an option to only focus on continuous or discrete output. In addition, 'centered' is not the obvious choice for alignment of the x axis, so this would take additional work to make presentable.
+Similarly there are QQ plots, scatterplots and more. I always try to get people to try correlation plots in lieu of large correlation matrices, and DataExplorer provides this.  The nice thing is that it will automatically create indicator variables for levels of categorical variables, but beyond that there are issues.   For one, it's diagonal is reversed from the typical presentation of correlation matrices. If you don't drop the missing, the plot isn't very useful, because it will include NA as a factor level, but to its credit DataExplorer has an option to only focus on continuous or discrete output. In addition, 'centered' is a rather choice for alignment of the x axis in my opinion, so this would take additional work to make presentable.
 
 ```{r data-explorer-plot_corr}
 plot_correlation(
@@ -345,7 +349,7 @@ plot_correlation(
 )
 ```
 
-There are packages that do this specifically, such as heatmaply. I have my own function that does an internal factor analysis to sort the variables and produces an interactive result, so this aspect of DataExplorer doesn't appeal to me.  
+There are packages that do this specifically, such as <span class="pack" style = "">heatmaply</span>. Before these came around I already had my own function, that also does an internal factor analysis to sort the variables, and produces an interactive result.  So while so this aspect of DataExplorer might be useful to others, it doesn't appeal much to me, especially given the other issues.  
 
 ```{r visibly-corrheat}
 hd %>% 
@@ -378,7 +382,7 @@ Not covered here, but DataExplorer also has functionality for feature processing
 
 #### Issues
 
-The issues I have are pretty minor with this one aside from unnecessary statistical analysis and visualization choices.
+The issues I have are pretty minor with this one aside from unnecessary statistical analysis and visualization choices.  I would also recommend `pryr::object_size` rather than base R's function.
 
 ### SmartEDA
 
@@ -428,7 +432,10 @@ As there was with numeric variables, there is also visualization for the categor
 ExpCatViz(hd_sample) 
 ```
 
-As far as reporting, smarteda provides this
+As far as reporting, SmartEDA also provides functionality.
+
+
+<!-- ADD LINK -->
 
 ```{r smarteda-ExpReport, eval = F}
 ExpReport(
@@ -443,23 +450,23 @@ ExpReport(
 
 #### Pros
 
-SmartEDA is fairly intuitive to use. It returns a data frame, and some of the less verbose output is quite ready to go.
+SmartEDA is fairly intuitive to use. It returns a data frame, and some of the less verbose output is quite ready to go.  It can also generate a report in automatic fashion.
 
 #### Issues
 
-A lot of this isn't very useful to me, such as parallel coordinate plots, 'outlier' analysis, etc.  I'm not crazy about the naming conventions, both for the functions and arguments (every single function begins with `Exp`, so why use it?). The default color schemes for some output is simply not viable.
+A lot of this isn't very useful to me, such as parallel coordinate plots, 'outlier' analysis, etc.  I'm not crazy about the naming conventions, both for the functions and arguments (every single function begins with `Exp`, so why use it?). The default color schemes for some output is simply not viable for presentation, and the report doesn't really have any options for controlling the output like DataExplorer did.
 
 
 ### summarytools
 
-The summarytools package provides four main functions to work with, but I'm going to skip those and go straight to the tool that uses the key summary functions and puts it into a very nice presentation.
+The <span class="pack" style = "">summarytools</span> package provides four main functions to work with, but I'm going to skip those and go straight to the tool that uses the key summary functions and puts it into a very nice presentation.
 
 
-```{r summarytools-dfsummary, results='asis', cache.rebuild=T}
+```{r summarytools-dfsummary, results='asis', cache.rebuild=F}
 library(summarytools)
 
 dfSummary(
-  hd %>% select(-id),
+  hd,
   varnumbers = FALSE,
   round.digits = 2,
   plain.ascii = FALSE,
@@ -470,39 +477,126 @@ dfSummary(
 )
 ```
 
-This is exactly what I want- basic, not overwhelming and redundant information, a usable data.frame, simple visualization that is all you need, basic categorical information. In one function, I have pretty much all I'd need, but with control to tweak as necessary.
+This is exactly what I want- basic, not overwhelming and redundant information, a usable data.frame, simple visuals to enhance the output without adding to the total information you have to parse (and which can be turned off), and basic categorical information. In one function, I have pretty much all I'd need, but with control to tweak as necessary.
 
-```{r summarytools-dfsummary-group-by, results='asis', cache.rebuild=T}
+```{r summarytools-dfsummary-group-by, results='asis', cache.rebuild=F}
 library(summarytools)
 
 hd_sample %>% 
   group_by(sex) %>% 
   dfSummary(
-  varnumbers = FALSE,
-  round.digits = 2,
-  plain.ascii = FALSE,
-  na.col = FALSE,
-  style = "grid",
-  graph.magnif = .33,
-  valid.col = FALSE,
-  tmp.img.dir = "img"
-)
+    varnumbers = FALSE,
+    round.digits = 2,
+    plain.ascii = FALSE,
+    na.col = FALSE,
+    style = "grid",
+    graph.magnif = .33,
+    valid.col = FALSE,
+    tmp.img.dir = "img"
+  )
 ```
 
 
 #### Pros
+
+The summary tools package provides a single function that produces a ready-to-present table within whatever document I'm already using. Very nice!
+
 #### Issues
-The only nitpicky stuff I have with this package is that ctable isn't useful to me, the numeric description is verbose
+
+The only nitpicky stuff I have with this package is that the <span class="func" style = "">ctable</span> function isn't useful to me, and some of the numeric description is not really necessary. 
+
+
+
+
+## Data Validity
+
+As a reminder, data validity is more about providing checks on the data rather than summarizing it per se.  These are packages more geared toward spotting or dealing with data issues.
+
+### dataMaid
+
+The primary utility of dataMaid is examination of data consistency, but it will also provide basic summaries too.  In the end it creates a report.  I came across this via the author's presentation at the Ann Arbor R User Group and have actually used it before.  The result can be found [here](), though here is a screenshot.
+
+```{r datamaid-show, echo=FALSE}
+knitr::include_graphics('img/dataMaid_report.png')
+```
+
+
+It provides an overall summary of the data frame including variable types, unique values, missing percentage, and potential problems.  Problems mostly regard outliers, which is fine to inspect, but arbitrarily set.
+
+
+
+<!-- ADD LINK -->
+
+```{r datamaid-report, eval = FALSE}
+library(dataMaid)
+
+makeDataReport(
+  hd,
+  ouput = 'html',
+  file = 'other_docs/datamaid_report.Rmd',
+  replace = TRUE
+)
+```
+
+
+
+#### Pros
+
+dataMaid is highly customizable, but the default is already a great way to get a good sense of whether your data is doing what it's supposed to do.  In the past I've found it be slow in rendering the output
+
+#### Issues
+
+I couldn't get anything but a pdf document even though I clearly specified html as per the documentation, so I'm not sure what's going on there..  The default outlier check, while better than most would do, seemed too sensitive, but this is nitpicky.
+
+### janitor
+
+Sadly, I still regularly receive data from Excel (and SPSS), which means I have to worry about things that I shouldn't have to worry about, like whether dates will actually be treated appropriately, if the column names are usable, or whether the imported file contains 10000 empty rows because someone accidentally hit the space bar.  
+
+The janitor package provides a few simple tools that many will probably find useful at some point, and I regularly use its remove_empty function after importing anything from Excel.  As an example I'll add an empty column with an Excel-like name, and a duplicated row.
+
+```{r janitor-cleannames}
+library(janitor)
+
+hd2 = hd
+
+hd2$`test this - ridiculous (name)` = NA
+hd2$`why.is-this_here` = 'same value everywhere'
+hd2[nrow(hd2) + 1,] = hd2[1,]
+
+hd2 %>% 
+  clean_names() %>% 
+  colnames()
+```
+
+And here is the remove_* functionality.
+
+```{r janitor-removempty.}
+hd2 %>% 
+  remove_empty() %>% 
+  remove_constant() %>% 
+  colnames()
+```
+
+
+Just a couple little things like that are very useful.  Otherwise, there is functionality for dates, tables, etc. that some might find useful in a pinch, but  probably will have more with the other summary functions in packages seen before, or more advanced users may simply just use lubridate etc.
+
+
+#### Pros
+
+Provides useful functionality you won't see in the other packages. 
+
+#### Issues
+
+Not a whole lot going on here relative to some of the other packages, but what is there is likely to be useful to many.
 
 ### visdat
 
-The package visdat is purely for visualization, and this includes missingness, correlation
+The package visdat[^visdescr] is, as its name implies, purely for visualization, and this includes missingness, correlation, and more.  We can start by visualizing the missing data.
 
 ```{r visdat-missing}
 library(visdat)
 vis_dat(hd_sample)
 ```
-
 
 We can look at variable types along with the missingness.  I like the integer/double mix, which might point to an issue if all the data should be integer valued.
 
@@ -517,7 +611,7 @@ vis_cor(hd %>% select_if(is.numeric))
 ```
 
 
-
+One nice feature I haven't seen elsewhere is to visualize a given expected value across a data set.
 
 ```{r visdat-expect}
 hd %>% 
@@ -525,12 +619,16 @@ hd %>%
   vis_expect(expectation =  ~ .x == 'male')
 ```
 
-We can also compare whole data sets.
+We can also compare whole data sets. Here the differences are with missing values in one and not the other.
 
 ```{r visdat-compare}
+hd2 = noiris::heart_disease %>% 
+  select(colnames(hd_sample)) %>% 
+  mutate_if(is.factor, as.character)
+
 vis_compare(
   hd_sample,
-  noiris::heart_disease %>% select(colnames(hd_sample)) %>% mutate_if(is.factor, as.character)
+  hd2
 )
 ```
 
@@ -542,36 +640,95 @@ This package adds some useful functionality we haven't seen.  In addition, the u
 
 #### Issues
 
-This isn't for numeric description, so can only supplement typical EDA. You may have to do some pre-processing for some functions unlike with other tools (e.g. subsetting to numeric).
-
-## Data Validity
-
-### dataMaid
-### janitor
+This isn't for numeric description, so can only supplement typical EDA as we've had before. You may have to do some pre-processing for some functions unlike with other tools (e.g. subsetting to numeric).
 
 
-dlookr: pdf report only? bad base R vis
-smarteda: vignette code and typos do not inspire confidence
+
 
 
 ## Summary
 
-```{r sumtable, eval = F}
+```{r sumtable, eval = T, echo=FALSE}
 tibble(
-  Package = c('arsenal', 'DataExplorer', 'SmartEDA', 'summarytools', 'visdat'),
-  `Ready to use output` = c('', emo::ji('check'), emo::ji('check'), emo::ji('check'), emo::ji('check')),
-  `Coding Standards` = rep('', 5),
-  `Visualization` = rep('', 5),
-  `Report Generation` = rep('', 5),
-) %>% 
-  kable_df(align = 'lccc')
+  Package = c(
+    'arsenal',
+    'DataExplorer',
+    'SmartEDA',
+    'summarytools',
+    'visdat',
+    'dataMaid',
+    'janitor'
+  ),
+  `Ready to use output` = c(
+    '',
+    emo::ji('thumbsup'),
+    emo::ji('thumbsup'),
+    emo::ji('thumbsup'),
+    emo::ji('thumbsup'),
+    '',
+    emo::ji('thumbsup')
+  ),
+  `Coding Quality` = c(
+    '',
+    emo::ji('thumbsup'),
+    '',
+    '',
+    emo::ji('thumbsup'),
+    '',
+    emo::ji('thumbsup')
+  ),
+  `Visualization` = c(
+    '',
+    emo::ji('thumbsup'),
+    emo::ji('thumbsup'),
+    emo::ji('thumbsup'),
+    emo::ji('thumbsup'),
+    emo::ji('thumbsup'),
+   ''
+  ),
+  `Report Generation` = c(
+    '',
+    emo::ji('thumbsup'),
+    emo::ji('thumbsup'),
+    '',
+    '',
+    emo::ji('thumbsup'),
+    ''
+  ),
+  `Dedicated Website` = c(
+    emo::ji('thumbsup'),
+    emo::ji('thumbsup'),
+    emo::ji('thumbsup'),
+    '',
+    emo::ji('thumbsup'),
+    '',
+    emo::ji('thumbsup')
+  )
+) %>%
+  kable_df(align = 'lcccccc')
 ```
 
+- Ready to use output: supplies a data.frame or ggplot object.
+- Coding Quality: uses type-safe checks, active development (notable recent activity), explicitly uses some standard (e.g. open sci), my own personal opinion
+- Visualization: includes at least some visualization aspect.
+- Report Generation: has a function to report a separate html or pdf file of multiple results
+- Dedicated Website: more than just a github repo, has a website with vignettes.  All of these are on github, so with pkgdown there is no reason not to have this.
 
 
 ## Links
-https://mayoverse.github.io/arsenal/
-http://visdat.njtierney.com/
+
+### Description packages
+
+[arsenal](https://mayoverse.github.io/arsenal/)
+[DataExplorer](http://boxuancui.github.io/DataExplorer/)
+[SmartEDA](https://daya6489.github.io/SmartEDA/)
+[summarytools](https://github.com/dcomtois/summarytools)
+
+### Validation packages
+
+[visdat](http://visdat.njtierney.com/)
+[dataMaid](https://github.com/ekstroem/dataMaid)
+[janitor](https://sfirke.github.io/janitor/)
 
 ## Exercises
 
@@ -582,3 +739,7 @@ http://visdat.njtierney.com/
 [^nottoomessy]: However, for our demonstration I'll be using something a little more wieldy.
 
  [^cripdm]: To be honest, I wasn't familiar with the CRoss Industry Standard Process for Data Mining until reading the article citing it. I don't get the impression any particular methodology is actually consciously thought about by the vast majority of practicing data scientists, but it's useful in providing a framework for the content here.
+ 
+ [^nopair]: The data we're using isn't paired and their documentation doesn't provide a working example.
+ 
+ [^visdescr]: The article by Staniak & Biecek places visdat with description rather than validity, but the data frame comparison, expectation investigation, and missing exploration seem more validity issues than data summaries.
