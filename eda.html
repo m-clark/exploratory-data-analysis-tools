@@ -25,8 +25,8 @@
   
   
   <!--  https://schema.org/Article -->
-  <meta property="article:published" itemprop="datePublished" content="2020-07-02"/>
-  <meta property="article:created" itemprop="dateCreated" content="2020-07-02"/>
+  <meta property="article:published" itemprop="datePublished" content="2020-07-03"/>
+  <meta property="article:created" itemprop="dateCreated" content="2020-07-03"/>
   <meta name="article:author" content="Michael Clark"/>
   
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
@@ -46,7 +46,7 @@
   <!--radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output","css","bibliography","tags"]}},"value":[{"type":"character","attributes":{},"value":["Exploratory Data Analysis"]},{"type":"character","attributes":{},"value":["A Demonstration of Tools\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Michael Clark"]},{"type":"character","attributes":{},"value":["https://m-clark.github.io"]}]}]},{"type":"character","attributes":{},"value":["2020-07-02"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","toc"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"logical","attributes":{},"value":[true]}]}]},{"type":"character","attributes":{},"value":["distill.css"]},{"type":"character","attributes":{},"value":["cites.bib"]},{"type":"list","attributes":{},"value":[]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output","css","bibliography","tags"]}},"value":[{"type":"character","attributes":{},"value":["Exploratory Data Analysis"]},{"type":"character","attributes":{},"value":["A Demonstration of Tools\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Michael Clark"]},{"type":"character","attributes":{},"value":["https://m-clark.github.io"]}]}]},{"type":"character","attributes":{},"value":["2020-07-03"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","toc"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"logical","attributes":{},"value":[true]}]}]},{"type":"character","attributes":{},"value":["distill.css"]},{"type":"character","attributes":{},"value":["cites.bib"]},{"type":"character","attributes":{},"value":["R","exploratory data analysis","EDA","automated","arsenal","DataExplorer","SmartEDA","summarytools","dataMaid","janitor","visdat"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   
@@ -968,7 +968,7 @@
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Exploratory Data Analysis","description":"A Demonstration of Tools","authors":[{"author":"Michael Clark","authorURL":"https://m-clark.github.io","affiliation":"&nbsp;","affiliationURL":"#"}],"publishedDate":"2020-07-02T00:00:00.000-04:00","citationText":"Clark, 2020"}
+{"title":"Exploratory Data Analysis","description":"A Demonstration of Tools","authors":[{"author":"Michael Clark","authorURL":"https://m-clark.github.io","affiliation":"&nbsp;","affiliationURL":"#"}],"publishedDate":"2020-07-03T00:00:00.000-04:00","citationText":"Clark, 2020"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -985,7 +985,7 @@
 <div class="d-byline">
   Michael Clark <a href="https://m-clark.github.io" class="uri">https://m-clark.github.io</a> 
   
-<br/>2020-07-02
+<br/>2020-07-03
 </div>
 
 <div class="d-article">
@@ -1009,6 +1009,7 @@
 <li><a href="#janitor">janitor</a></li>
 <li><a href="#visdat">visdat</a></li>
 </ul></li>
+<li><a href="#data-cleaning-and-transformations">Data Cleaning and Transformations</a></li>
 <li><a href="#summary">Summary</a></li>
 <li><a href="#links">Links</a><ul>
 <li><a href="#description-packages">Description packages</a></li>
@@ -1020,12 +1021,12 @@
 <hr class="d-toc-separator"/>
 <h2 id="introduction">Introduction</h2>
 <p>In R there are many tools available for exploring data. However, in consulting I still see a lot of people using base R’s <span class="func" style="">table</span> and <span class="func" style="">summary</span> functions, followed by a lot of work to get the result into a more presentable format. My own frustrations led to me creating a package (<a href="https://m-clark.github.io/tidyext/">tidyext</a>) for personal use in this area. While that suits me fine, there are tools that can go much further with little effort. Recently, Staniak &amp; Biecek <span class="citation" data-cites="staniak2019landscape">Staniak and Biecek (<a href="#ref-staniak2019landscape" role="doc-biblioref">2019</a>)</span> wrote an article in the R Journal exploring several of such packages, so I thought I’d try them out for myself, and take others along with me for that ride.</p>
-<p>Note that these are first impressions, I haven’t really dived deeply into any of the packages, and may be missing some things. But that is also part of the point for this sort of thing. It isn’t a modeling package, and we have a good idea of what we want in EDA, so these should be easy to pick up and use.</p>
+<p>Note that these are first impressions, I haven’t really dived deeply into any of the packages, and may be missing some things. But that is also part of the point for this sort of thing. These aren’t modeling packages, and we have a good idea of what we want in EDA, so these should be easy to pick up and use.</p>
 <h2 id="packages">Packages</h2>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
-<p>I’ve updated the article’s table 1, basically as it would have a year’s worth of downloads.</p>
+<p>I’ve updated the article’s table 1, which adds roughly a year’s worth of downloads.</p>
 <div class="layout-chunk" data-layout="l-body">
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1369,13 +1370,13 @@ exploreR
 <p>I’m definitely less interested in the preparation. ‘Cleaning’ in the article refers to mean/median imputation, something I’ve never bothered to do for reasons that have been noted in the statistical literature for a very long time. The other transformations are easy, and probably should be explicitly documented in your code. Furthermore, in creating derived attributes, things like category merging and standardization depend on the subset of the data used, so it would probably be better to be more explicit than automatic. Also, if things like an automated PCA is viable for your situation, it probably is very simple data (i.e. all variables of the same type), in which case, most of these tools probably won’t add much value to you anyway.</p>
 <p>So with that in mind here are the ones I will explore (in alphabetical order):</p>
 <ul>
-<li>arsenal</li>
-<li>DataExplorer</li>
-<li>dataMaid</li>
-<li>janitor</li>
-<li>SmartEDA</li>
-<li>summarytools</li>
-<li>visdat</li>
+<li><span class="pack" style="">arsenal</span></li>
+<li><span class="pack" style="">DataExplorer</span></li>
+<li><span class="pack" style="">dataMaid</span></li>
+<li><span class="pack" style="">janitor</span> (not explored in the previous article)</li>
+<li><span class="pack" style="">SmartEDA</span></li>
+<li><span class="pack" style="">summarytools</span></li>
+<li><span class="pack" style="">visdat</span></li>
 </ul>
 <h2 id="the-data">The Data</h2>
 <p>I’ve chosen the heart_disease data available from the <a href="https://archive.ics.uci.edu/ml/datasets/Heart+Disease">UCI repository</a> (object name <code>hd</code>). It contains a mixture of data types but isn’t too unweildy, as it’s already been cleaned and has few columns. I’ve additionally added some random missingness, and created an <code>hd_sample</code> which has only a couple columns to cut down on the display.</p>
@@ -1839,7 +1840,7 @@ heart_disease
 </div>
 <p>These serve most of my needs for initial peeking at the data. They return a tibble/data.frame that makes for easy presentation and visualization. The underlying code uses tidyverse and mostly adheres to standard programming conventions. This is the same sort of thing I’m looking for.</p>
 <h3 id="arsenal">arsenal</h3>
-<p>We begin alphabetically with the arsenal package. Here we use tableby for a generic summary as well as grouped summary. The result is markdown, so for presentation in an R Markdown document, one must use the chunk option <code>results='asis'</code>.</p>
+<p>We begin alphabetically with the <span class="pack" style="">arsenal</span> package. Here we use tableby for a generic summary as well as grouped summary. The result is markdown, so for presentation in an R Markdown document, one must use the chunk option <code>results='asis'</code>.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 library(arsenal)
@@ -2179,7 +2180,7 @@ with(hd, table(sex, chest_pain_type)) %&gt;%
 <h4 id="issues">Issues</h4>
 <p>I’m not thrilled with markdown output, as I have little control over it, but it’s fine. Also, the default layout is not so succinct, and it appears it’s trying to emulate SAS functions, which are not models for presentation in my opinion. One can use a function to write the output of a single table to html, but I’d rather it just be amenable to the document I’m already creating, or create a report for me of all tables. Lastly, I’m not crazy about using the <span class="func" style="">summary</span> function to get the output. The underlying list objects are not ‘print ready’, so using summary as an argument with default of TRUE would make more sense to me design-wise.</p>
 <h3 id="dataexplorer">DataExplorer</h3>
-<p>Now we move to DataExplorer. Let’s introduce the package with the introduce function. I already like this, as it provides good info that extends what you’d get with str or glimpse.</p>
+<p>Now we move to <span class="pack" style="">DataExplorer</span>. Let’s introduce the package with the introduce function. I already like this, as it provides good info that extends what you’d get with str or glimpse.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 library(DataExplorer)
@@ -2226,7 +2227,7 @@ hd %&gt;%
   facet_wrap(~ variable, scales = &#39;free&#39;) </code></pre>
 <p><img src="eda_files/figure-html5/data-explorer-plot_intro-ggplot-1.svg" width="624" style="display: block; margin: auto;" /></p>
 </div>
-<p>Similarly there are QQ plots, scatterplots and more. I always try to get people to try correlation plots in lieu of large correlation matrices, and DataExplorer provides this. The nice thing is that it will automatically create indicator variables for levels of categorical variables, but beyond that there are issues. For one, it’s diagonal is reversed from the typical presentation of correlation matrices. If you don’t drop the missing, the plot isn’t very useful, because it will include NA as a factor level, but to its credit DataExplorer has an option to only focus on continuous or discrete output. In addition, ‘centered’ is a rather choice for alignment of the x axis in my opinion, so this would take additional work to make presentable.</p>
+<p>Similarly there are QQ plots, scatterplots and more. I always try to get people to try correlation plots in lieu of large correlation matrices, and <span class="pack" style="">DataExplorer</span> provides this. The nice thing is that it will automatically create indicator variables for levels of categorical variables, but beyond that there are issues. For one, it’s diagonal is reversed from the typical presentation of correlation matrices. If you don’t drop the missing, the plot isn’t very useful, because it will include NA as a factor level, but to its credit <span class="pack" style="">DataExplorer</span> has an option to only focus on continuous or discrete output. In addition, ‘centered’ is a rather choice for alignment of the x axis in my opinion, so this would take additional work to make presentable.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 plot_correlation(
@@ -2236,7 +2237,7 @@ plot_correlation(
 )</code></pre>
 <p><img src="eda_files/figure-html5/data-explorer-plot_corr-1.svg" width="624" style="display: block; margin: auto;" /></p>
 </div>
-<p>There are packages that do this specifically, such as <span class="pack" style="">heatmaply</span>. Before these came around I already had my own function, that also does an internal factor analysis to sort the variables, and produces an interactive result. So while so this aspect of DataExplorer might be useful to others, it doesn’t appeal much to me, especially given the other issues.</p>
+<p>There are packages that do this specifically, such as <span class="pack" style="">heatmaply</span>. Before these came around I already had my own function, that also does an internal factor analysis to sort the variables, and produces an interactive result. So while so this aspect of <span class="pack" style="">DataExplorer</span> might be useful to others, it doesn’t appeal much to me, especially given the other issues.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 hd %&gt;% 
@@ -2260,12 +2261,12 @@ create_report(
 )</code></pre>
 </div>
 <h4 id="pros-1">Pros</h4>
-<p>I think many would like at least some functionality in DataExplorer, as well as many of the visualizations. The ease with which to generate a report should also be sufficient for anyone’s personal use, and with some tweaking, presentation to others. It also uses data.table under the hood, so likely can handle large data with efficiency.</p>
-<p>Not covered here, but DataExplorer also has functionality for feature processing and engineering, for example, collapsing sparse categories, dummy coding, etc.</p>
+<p>I think many would like at least some functionality in <span class="pack" style="">DataExplorer</span>, as well as many of the visualizations. The ease with which to generate a report should also be sufficient for anyone’s personal use, and with some tweaking, presentation to others. It also uses data.table under the hood, so likely can handle large data with efficiency.</p>
+<p>Not covered here, but <span class="pack" style="">DataExplorer</span> also has functionality for feature processing and engineering, for example, collapsing sparse categories, dummy coding, etc.</p>
 <h4 id="issues-1">Issues</h4>
 <p>The issues I have are pretty minor with this one aside from unnecessary statistical analysis and visualization choices. I would also recommend <code>pryr::object_size</code> rather than base R’s function.</p>
 <h3 id="smarteda">SmartEDA</h3>
-<p>I wanted to look at the SmartEDA package because the figure in the article was of a clean report. Let’s start our exploration with the basic ExpData function</p>
+<p>I wanted to look at the <span class="pack" style="">SmartEDA</span> package because the figure in the article was of a clean report. Let’s start our exploration with the basic ExpData function</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 library(SmartEDA)
@@ -2384,7 +2385,7 @@ ExpCatViz(hd_sample) </code></pre>
 [[2]]</code></pre>
 <p><img src="eda_files/figure-html5/smarteda-ExpCatViz-2.svg" width="624" style="display: block; margin: auto;" /></p>
 </div>
-<p>As far as reporting, SmartEDA also provides functionality.</p>
+<p>As far as reporting, <span class="pack" style="">SmartEDA</span> also provides functionality.</p>
 <!-- ADD LINK -->
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
@@ -2396,9 +2397,9 @@ ExpReport(
 )</code></pre>
 </div>
 <h4 id="pros-2">Pros</h4>
-<p>SmartEDA is fairly intuitive to use. It returns a data frame, and some of the less verbose output is quite ready to go. It can also generate a report in automatic fashion.</p>
+<p><span class="pack" style="">SmartEDA</span> is fairly intuitive to use. It returns a data frame, and some of the less verbose output is quite ready to go. It can also generate a report in automatic fashion.</p>
 <h4 id="issues-2">Issues</h4>
-<p>A lot of this isn’t very useful to me, such as parallel coordinate plots, ‘outlier’ analysis, etc. I’m not crazy about the naming conventions, both for the functions and arguments (every single function begins with <code>Exp</code>, so why use it?). The default color schemes for some output is simply not viable for presentation, and the report doesn’t really have any options for controlling the output like DataExplorer did.</p>
+<p>A lot of this isn’t very useful to me, such as parallel coordinate plots, ‘outlier’ analysis, etc. I’m not crazy about the naming conventions, both for the functions and arguments (every single function begins with <code>Exp</code>, so why use it?). The default color schemes for some output is simply not viable for presentation, and the report doesn’t really have any options for controlling the output like <span class="pack" style="">DataExplorer</span> did.</p>
 <h3 id="summarytools">summarytools</h3>
 <p>The <span class="pack" style="">summarytools</span> package provides four main functions to work with, but I’m going to skip those and go straight to the tool that uses the key summary functions and puts it into a very nice presentation.</p>
 <div class="layout-chunk" data-layout="l-body">
@@ -2862,7 +2863,7 @@ IQR (CV) : 11.5 (0.1)</td>
 <h2 id="data-validity">Data Validity</h2>
 <p>As a reminder, data validity is more about providing checks on the data rather than summarizing it per se. These are packages more geared toward spotting or dealing with data issues.</p>
 <h3 id="datamaid">dataMaid</h3>
-<p>The primary utility of dataMaid is examination of data consistency, but it will also provide basic summaries too. In the end it creates a report. I came across this via the author’s presentation at the Ann Arbor R User Group and have actually used it before. The result can be found <a href="">here</a>, though here is a screenshot.</p>
+<p>The primary utility of <span class="pack" style="">dataMaid</span> is examination of data consistency, but it will also provide basic summaries too. In the end it creates a report. I came across this via the author’s presentation at the Ann Arbor R User Group and have actually used it before. The result can be found <a href="">here</a>, though here is a screenshot.</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="img/dataMaid_report.png" width="346" style="display: block; margin: auto;" /></p>
 </div>
@@ -2880,12 +2881,12 @@ makeDataReport(
 )</code></pre>
 </div>
 <h4 id="pros-4">Pros</h4>
-<p>dataMaid is highly customizable, but the default is already a great way to get a good sense of whether your data is doing what it’s supposed to do. In the past I’ve found it be slow in rendering the output</p>
+<p><span class="pack" style="">dataMaid</span> is highly customizable, but the default is already a great way to get a good sense of whether your data is doing what it’s supposed to do. In the past I’ve found it be slow in rendering the output</p>
 <h4 id="issues-4">Issues</h4>
 <p>I couldn’t get anything but a pdf document even though I clearly specified html as per the documentation, so I’m not sure what’s going on there.. The default outlier check, while better than most would do, seemed too sensitive, but this is nitpicky.</p>
 <h3 id="janitor">janitor</h3>
 <p>Sadly, I still regularly receive data from Excel (and SPSS), which means I have to worry about things that I shouldn’t have to worry about, like whether dates will actually be treated appropriately, if the column names are usable, or whether the imported file contains 10000 empty rows because someone accidentally hit the space bar.</p>
-<p>The janitor package provides a few simple tools that many will probably find useful at some point, and I regularly use its remove_empty function after importing anything from Excel. As an example I’ll add an empty column with an Excel-like name, and a duplicated row.</p>
+<p>The <span class="pack" style="">janitor</span> package provides a few simple tools that many will probably find useful at some point, and I regularly use its remove_empty function after importing anything from Excel. As an example I’ll add an empty column with an Excel-like name, and a duplicated row.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 library(janitor)
@@ -2919,11 +2920,11 @@ hd2 %&gt;%
 </div>
 <p>Just a couple little things like that are very useful. Otherwise, there is functionality for dates, tables, etc. that some might find useful in a pinch, but probably will have more with the other summary functions in packages seen before, or more advanced users may simply just use lubridate etc.</p>
 <h4 id="pros-5">Pros</h4>
-<p>Provides useful functionality you won’t see in the other packages.</p>
+<p>Provides useful functionality not seen in the other packages.</p>
 <h4 id="issues-5">Issues</h4>
 <p>Not a whole lot going on here relative to some of the other packages, but what is there is likely to be useful to many.</p>
 <h3 id="visdat">visdat</h3>
-<p>The package visdat<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> is, as its name implies, purely for visualization, and this includes missingness, correlation, and more. We can start by visualizing the missing data.</p>
+<p>The package <span class="pack" style="">visdat</span><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> is, as its name implies, purely for visualization, and this includes missingness, correlation, and more. We can start by visualizing the missing data.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 library(visdat)
@@ -2967,7 +2968,10 @@ vis_compare(
 <p>This package adds some useful functionality we haven’t seen. In addition, the underlying code adheres to open science standards.</p>
 <h4 id="issues-6">Issues</h4>
 <p>This isn’t for numeric description, so can only supplement typical EDA as we’ve had before. You may have to do some pre-processing for some functions unlike with other tools (e.g. subsetting to numeric).</p>
+<h2 id="data-cleaning-and-transformations">Data Cleaning and Transformations</h2>
+<p>As mentioned previously, I’m not interested in using these packages for doing this, and based on Staniak and Biecek, only a couple of them provide this, <span class="pack" style="">DataExplorer</span> being the only package that we’ve explored here. Mean/median/mode imputation is a great way to attenuate correlation, so I’m not interested in that. I don’t even know what an ‘outlier’ is outside of a modeling framework so I’m definitely not interested in doing something about those values based on a univariate analysis. Discretizing numeric variables should almost never be done<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>, so that functionality is not desirable. And between base R functions like <span class="func" style="">scale</span> and <span class="func" style="">log</span>, or the <span class="func" style="">rescale</span> function from <span class="pack" style="">scales</span>, lumping factors and similar via <span class="pack" style="">forcats</span>, I don’t really need another package for this sort of thing.</p>
 <h2 id="summary">Summary</h2>
+<p>Here is a probably inaccurate list of features I made based on quick inspections.</p>
 <div class="layout-chunk" data-layout="l-body">
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -2979,7 +2983,7 @@ Package
 Ready to use output
 </th>
 <th style="text-align:center;">
-Coding Quality
+Code Quality
 </th>
 <th style="text-align:center;">
 Visualization
@@ -3123,12 +3127,13 @@ janitor
 </table>
 </div>
 <ul>
-<li>Ready to use output: supplies a data.frame or ggplot object.</li>
-<li>Coding Quality: uses type-safe checks, active development (notable recent activity), explicitly uses some standard (e.g. open sci), my own personal opinion</li>
+<li>Ready to use output: supplies a data frame or ggplot class object.</li>
+<li>Code Quality: uses type-safe checks, active development (notable recent activity and response to issues), explicitly uses some standard (e.g. open sci), but mostly my own personal opinion.</li>
 <li>Visualization: includes at least some visualization aspect.</li>
 <li>Report Generation: has a function to report a separate html or pdf file of multiple results</li>
-<li>Dedicated Website: more than just a github repo, has a website with vignettes. All of these are on github, so with pkgdown there is no reason not to have this.</li>
+<li>Dedicated Website: more than just a github repo, has a website with vignettes. All of these packages are on GitHub, so with <span class="pack" style="">pkgdown</span> there is no reason not to have this.</li>
 </ul>
+<p>In general I would imagine I’d use <span class="pack" style="">summarytools</span> or <span class="pack" style="">DataExplorer</span>, with <span class="pack" style="">visdat</span> and <span class="pack" style="">janitor</span> to fill in additional information or help with the data processing. Interestingly, these also appear to be the most popular packages under consideration<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>.</p>
 <h2 id="links">Links</h2>
 <h3 id="description-packages">Description packages</h3>
 <p><a href="https://mayoverse.github.io/arsenal/">arsenal</a> <a href="http://boxuancui.github.io/DataExplorer/">DataExplorer</a> <a href="https://daya6489.github.io/SmartEDA/">SmartEDA</a> <a href="https://github.com/dcomtois/summarytools">summarytools</a></p>
@@ -3150,7 +3155,9 @@ janitor
 <li id="fn2" role="doc-endnote"><p>To be honest, I wasn’t familiar with the CRoss Industry Standard Process for Data Mining until reading the article citing it. I don’t get the impression any particular methodology is actually consciously thought about by the vast majority of practicing data scientists, but it’s useful in providing a framework for the content here.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3" role="doc-endnote"><p>The data we’re using isn’t paired and their documentation doesn’t provide a working example.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4" role="doc-endnote"><p>I see ‘Table 1’ used mostly by folks in medical fields, who subsequently place it as table 2, 3 or whatever as would normally be the case.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5" role="doc-endnote"><p>The article by Staniak &amp; Biecek places visdat with description rather than validity, but the data frame comparison, expectation investigation, and missing exploration seem more validity issues than data summaries.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>The article by Staniak &amp; Biecek places <span class="pack" style="">visdat</span> with description rather than validity, but the data frame comparison, expectation investigation, and missing exploration seem more validity issues than data summaries.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6" role="doc-endnote"><p>The only times I do this is with an already discrete variable, for example, going from 7 values to 5 values, or coarsening that might be applied in very large data situations for computational efficiency.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7" role="doc-endnote"><p>The <span class="pack" style="">janitor</span> package is notably more popular than any of the other packages.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 <!--radix_placeholder_article_footer-->

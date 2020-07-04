@@ -13,7 +13,7 @@ output:
     toc: true
 css: distill.css
 bibliography: cites.bib
-tags: []
+tags: [R, exploratory data analysis, EDA, automated, arsenal, DataExplorer, SmartEDA, summarytools, dataMaid, janitor, visdat]
 ---
 
 ```{r setup, include=FALSE}
@@ -48,16 +48,16 @@ rnd = tidyext::rnd
 
 In R there are many tools available for exploring data.  However, in consulting I still see a lot of people using base R's <span class="func" style = "">table</span> and <span class="func" style = "">summary</span> functions, followed by a lot of work to get the result into a more presentable format.  My own frustrations led to me creating a package ([tidyext](https://m-clark.github.io/tidyext/)) for personal use in this area.  While that suits me fine, there are tools that can go much further with little effort. Recently, Staniak & Biecek @staniak2019landscape wrote an article in the R Journal exploring several of such packages, so I thought I'd try them out for myself, and take others along with me for that ride.
 
-Note that these are first impressions, I haven't really dived deeply into any of the packages, and may be missing some things. But that is also part of the point for this sort of thing.  It isn't a modeling package, and we have a good idea of what we want in EDA, so these should be easy to pick up and use.
+Note that these are first impressions, I haven't really dived deeply into any of the packages, and may be missing some things. But that is also part of the point for this sort of thing.  These aren't modeling packages, and we have a good idea of what we want in EDA, so these should be easy to pick up and use.
 
 ## Packages
 
-```{r load-data}
+```{r load-data, cache=FALSE}
 pkg_downloads = read_rds('data/cran_downloads_pkgs.rds')
 monthly_stats = read_rds('data/monthly_stats.rds')
 ```
 
-I've updated the article's table 1, basically as it would have a year's worth of downloads.
+I've updated the article's table 1, which adds roughly a year's worth of downloads.
 
 ```{r table-1}
 pkg_downloads %>% 
@@ -84,8 +84,10 @@ Here is a visualization of their growth over time.
 
 ```{r cran-packs, echo=FALSE}
 monthly_stats %>%
+  filter(year_mo != '2020-Jul', package != 'janitor') %>% 
   ggplot(aes(x = year_mo, y = monthly_downloads, color = package)) +
   geom_hline(aes(yintercept = 5000), color = 'gray92') +
+  geom_hline(aes(yintercept = 10000), color = 'gray92') +
   ggbump::geom_bump(size = .5, alpha = .5, show.legend = F) +
   # ggforce::geom_bspline0(size = .5) +
   ggrepel::geom_text_repel(
@@ -99,7 +101,7 @@ monthly_stats %>%
   scico::scale_color_scico_d() +
   guides(x = guide_axis(n.dodge = 2)) +
   scale_x_discrete(breaks = paste0(2016:2020, c('-Jan', '-Jun'))) +
-  scale_y_continuous(breaks = c(1000, 2500, 5000, 10000, 15000)) +
+  scale_y_continuous(breaks = c(1000, 2500, 5000, 10000, 15000, 25000)) +
   labs(x = '', y = '', subtitle = "CRAN monthly downloads") +
   visibly::theme_clean()
 ```
@@ -149,13 +151,13 @@ I'm definitely less interested in the preparation.  'Cleaning' in the article re
 
 So with that in mind here are the ones I will explore (in alphabetical order):
 
-- arsenal
-- DataExplorer
-- dataMaid
-- janitor
-- SmartEDA
-- summarytools
-- visdat
+- <span class="pack" style = "">arsenal</span>
+- <span class="pack" style = "">DataExplorer</span>
+- <span class="pack" style = "">dataMaid</span>
+- <span class="pack" style = "">janitor</span> (not explored in the previous article)
+- <span class="pack" style = "">SmartEDA</span>
+- <span class="pack" style = "">summarytools</span>
+- <span class="pack" style = "">visdat</span>
 
 ## The Data
 
@@ -258,7 +260,7 @@ These serve most of my needs for initial peeking at the data.  They return a tib
 
 ### arsenal
 
-We begin alphabetically with the arsenal package.  Here we use tableby for a generic summary as well as grouped summary. The result is markdown, so for presentation in an R Markdown document, one must use the chunk option `results='asis'`.
+We begin alphabetically with the <span class="pack" style = "">arsenal</span> package.  Here we use tableby for a generic summary as well as grouped summary. The result is markdown, so for presentation in an R Markdown document, one must use the chunk option `results='asis'`.
 
 ```{r arsenal-table-by, echo = T, results='asis'}
 library(arsenal)
@@ -294,7 +296,7 @@ I'm not thrilled with markdown output, as I have little control over it, but it'
 
 ### DataExplorer
 
-Now we move to DataExplorer.  Let's introduce the package with the introduce function.  I already like this, as it provides good info that extends what you'd get with str or glimpse.
+Now we move to <span class="pack" style = "">DataExplorer</span>.  Let's introduce the package with the introduce function.  I already like this, as it provides good info that extends what you'd get with str or glimpse.
 
 ```{r data-explorer-introduce}
 library(DataExplorer)
@@ -339,7 +341,7 @@ hd %>%
 ```
 
 
-Similarly there are QQ plots, scatterplots and more. I always try to get people to try correlation plots in lieu of large correlation matrices, and DataExplorer provides this.  The nice thing is that it will automatically create indicator variables for levels of categorical variables, but beyond that there are issues.   For one, it's diagonal is reversed from the typical presentation of correlation matrices. If you don't drop the missing, the plot isn't very useful, because it will include NA as a factor level, but to its credit DataExplorer has an option to only focus on continuous or discrete output. In addition, 'centered' is a rather choice for alignment of the x axis in my opinion, so this would take additional work to make presentable.
+Similarly there are QQ plots, scatterplots and more. I always try to get people to try correlation plots in lieu of large correlation matrices, and <span class="pack" style = "">DataExplorer</span> provides this.  The nice thing is that it will automatically create indicator variables for levels of categorical variables, but beyond that there are issues.   For one, it's diagonal is reversed from the typical presentation of correlation matrices. If you don't drop the missing, the plot isn't very useful, because it will include NA as a factor level, but to its credit <span class="pack" style = "">DataExplorer</span> has an option to only focus on continuous or discrete output. In addition, 'centered' is a rather choice for alignment of the x axis in my opinion, so this would take additional work to make presentable.
 
 ```{r data-explorer-plot_corr}
 plot_correlation(
@@ -349,7 +351,7 @@ plot_correlation(
 )
 ```
 
-There are packages that do this specifically, such as <span class="pack" style = "">heatmaply</span>. Before these came around I already had my own function, that also does an internal factor analysis to sort the variables, and produces an interactive result.  So while so this aspect of DataExplorer might be useful to others, it doesn't appeal much to me, especially given the other issues.  
+There are packages that do this specifically, such as <span class="pack" style = "">heatmaply</span>. Before these came around I already had my own function, that also does an internal factor analysis to sort the variables, and produces an interactive result.  So while so this aspect of <span class="pack" style = "">DataExplorer</span> might be useful to others, it doesn't appeal much to me, especially given the other issues.  
 
 ```{r visibly-corrheat}
 hd %>% 
@@ -376,9 +378,9 @@ create_report(
 
 #### Pros
 
-I think many would like at least some functionality in DataExplorer, as well as many of the visualizations.  The ease with which to generate a report should also be sufficient for anyone's personal use, and with some tweaking, presentation to others.  It also uses data.table under the hood, so likely can handle large data with efficiency.
+I think many would like at least some functionality in <span class="pack" style = "">DataExplorer</span>, as well as many of the visualizations.  The ease with which to generate a report should also be sufficient for anyone's personal use, and with some tweaking, presentation to others.  It also uses data.table under the hood, so likely can handle large data with efficiency.
 
-Not covered here, but DataExplorer also has functionality for feature processing and engineering, for example, collapsing sparse categories, dummy coding, etc.
+Not covered here, but <span class="pack" style = "">DataExplorer</span> also has functionality for feature processing and engineering, for example, collapsing sparse categories, dummy coding, etc.
 
 #### Issues
 
@@ -386,7 +388,7 @@ The issues I have are pretty minor with this one aside from unnecessary statisti
 
 ### SmartEDA
 
-I wanted to look at the SmartEDA package because the figure in the article was of a clean report.  Let's start our exploration with the basic ExpData function
+I wanted to look at the <span class="pack" style = "">SmartEDA</span> package because the figure in the article was of a clean report.  Let's start our exploration with the basic ExpData function
 
 ```{r smarteda-expdata}
 library(SmartEDA)
@@ -432,7 +434,7 @@ As there was with numeric variables, there is also visualization for the categor
 ExpCatViz(hd_sample) 
 ```
 
-As far as reporting, SmartEDA also provides functionality.
+As far as reporting, <span class="pack" style = "">SmartEDA</span> also provides functionality.
 
 
 <!-- ADD LINK -->
@@ -450,11 +452,11 @@ ExpReport(
 
 #### Pros
 
-SmartEDA is fairly intuitive to use. It returns a data frame, and some of the less verbose output is quite ready to go.  It can also generate a report in automatic fashion.
+<span class="pack" style = "">SmartEDA</span> is fairly intuitive to use. It returns a data frame, and some of the less verbose output is quite ready to go.  It can also generate a report in automatic fashion.
 
 #### Issues
 
-A lot of this isn't very useful to me, such as parallel coordinate plots, 'outlier' analysis, etc.  I'm not crazy about the naming conventions, both for the functions and arguments (every single function begins with `Exp`, so why use it?). The default color schemes for some output is simply not viable for presentation, and the report doesn't really have any options for controlling the output like DataExplorer did.
+A lot of this isn't very useful to me, such as parallel coordinate plots, 'outlier' analysis, etc.  I'm not crazy about the naming conventions, both for the functions and arguments (every single function begins with `Exp`, so why use it?). The default color schemes for some output is simply not viable for presentation, and the report doesn't really have any options for controlling the output like <span class="pack" style = "">DataExplorer</span> did.
 
 
 ### summarytools
@@ -514,7 +516,7 @@ As a reminder, data validity is more about providing checks on the data rather t
 
 ### dataMaid
 
-The primary utility of dataMaid is examination of data consistency, but it will also provide basic summaries too.  In the end it creates a report.  I came across this via the author's presentation at the Ann Arbor R User Group and have actually used it before.  The result can be found [here](), though here is a screenshot.
+The primary utility of <span class="pack" style = "">dataMaid</span> is examination of data consistency, but it will also provide basic summaries too.  In the end it creates a report.  I came across this via the author's presentation at the Ann Arbor R User Group and have actually used it before.  The result can be found [here](), though here is a screenshot.
 
 ```{r datamaid-show, echo=FALSE}
 knitr::include_graphics('img/dataMaid_report.png')
@@ -542,7 +544,7 @@ makeDataReport(
 
 #### Pros
 
-dataMaid is highly customizable, but the default is already a great way to get a good sense of whether your data is doing what it's supposed to do.  In the past I've found it be slow in rendering the output
+<span class="pack" style = "">dataMaid</span> is highly customizable, but the default is already a great way to get a good sense of whether your data is doing what it's supposed to do.  In the past I've found it be slow in rendering the output
 
 #### Issues
 
@@ -552,7 +554,7 @@ I couldn't get anything but a pdf document even though I clearly specified html 
 
 Sadly, I still regularly receive data from Excel (and SPSS), which means I have to worry about things that I shouldn't have to worry about, like whether dates will actually be treated appropriately, if the column names are usable, or whether the imported file contains 10000 empty rows because someone accidentally hit the space bar.  
 
-The janitor package provides a few simple tools that many will probably find useful at some point, and I regularly use its remove_empty function after importing anything from Excel.  As an example I'll add an empty column with an Excel-like name, and a duplicated row.
+The <span class="pack" style = "">janitor</span> package provides a few simple tools that many will probably find useful at some point, and I regularly use its remove_empty function after importing anything from Excel.  As an example I'll add an empty column with an Excel-like name, and a duplicated row.
 
 ```{r janitor-cleannames}
 library(janitor)
@@ -583,7 +585,7 @@ Just a couple little things like that are very useful.  Otherwise, there is func
 
 #### Pros
 
-Provides useful functionality you won't see in the other packages. 
+Provides useful functionality not seen in the other packages. 
 
 #### Issues
 
@@ -591,7 +593,7 @@ Not a whole lot going on here relative to some of the other packages, but what i
 
 ### visdat
 
-The package visdat[^visdescr] is, as its name implies, purely for visualization, and this includes missingness, correlation, and more.  We can start by visualizing the missing data.
+The package <span class="pack" style = "">visdat</span>[^visdescr] is, as its name implies, purely for visualization, and this includes missingness, correlation, and more.  We can start by visualizing the missing data.
 
 ```{r visdat-missing}
 library(visdat)
@@ -644,9 +646,13 @@ This isn't for numeric description, so can only supplement typical EDA as we've 
 
 
 
+## Data Cleaning and Transformations
 
+As mentioned previously, I'm not interested in using these packages for doing this, and based on Staniak and Biecek, only a couple of them provide this, <span class="pack" style = "">DataExplorer</span> being the only package that we've explored here.  Mean/median/mode imputation is a great way to attenuate correlation, so I'm not interested in that.  I don't even know what an 'outlier' is outside of a modeling framework so I'm definitely not interested in doing something about those values based on a univariate analysis. Discretizing numeric variables should almost never be done[^discrete_exceptions], so that functionality is not desirable. And between base R functions like <span class="func" style = "">scale</span> and <span class="func" style = "">log</span>, or the <span class="func" style = "">rescale</span> function from <span class="pack" style = "">scales</span>, lumping factors and similar via <span class="pack" style = "">forcats</span>, I don't really need another package for this sort of thing.
 
 ## Summary
+
+Here is a probably inaccurate list of features I made based on quick inspections.
 
 ```{r sumtable, eval = T, echo=FALSE}
 tibble(
@@ -668,7 +674,7 @@ tibble(
     '',
     emo::ji('thumbsup')
   ),
-  `Coding Quality` = c(
+  `Code Quality` = c(
     '',
     emo::ji('thumbsup'),
     '',
@@ -708,12 +714,14 @@ tibble(
   kable_df(align = 'lcccccc')
 ```
 
-- Ready to use output: supplies a data.frame or ggplot object.
-- Coding Quality: uses type-safe checks, active development (notable recent activity), explicitly uses some standard (e.g. open sci), my own personal opinion
+- Ready to use output: supplies a data frame or ggplot class object.
+- Code Quality: uses type-safe checks, active development (notable recent activity and response to issues), explicitly uses some standard (e.g. open sci), but mostly my own personal opinion.
 - Visualization: includes at least some visualization aspect.
 - Report Generation: has a function to report a separate html or pdf file of multiple results
-- Dedicated Website: more than just a github repo, has a website with vignettes.  All of these are on github, so with pkgdown there is no reason not to have this.
+- Dedicated Website: more than just a github repo, has a website with vignettes.  All of these packages are on GitHub, so with <span class="pack" style = "">pkgdown</span> there is no reason not to have this.
 
+
+In general I would imagine I'd use <span class="pack" style = "">summarytools</span> or <span class="pack" style = "">DataExplorer</span>, with <span class="pack" style = "">visdat</span> and <span class="pack" style = "">janitor</span> to fill in additional information or help with the data processing.  Interestingly, these also appear to be the most popular packages under consideration[^janitorpop].
 
 ## Links
 
@@ -742,4 +750,8 @@ tibble(
  
  [^nopair]: The data we're using isn't paired and their documentation doesn't provide a working example.
  
- [^visdescr]: The article by Staniak & Biecek places visdat with description rather than validity, but the data frame comparison, expectation investigation, and missing exploration seem more validity issues than data summaries.
+ [^visdescr]: The article by Staniak & Biecek places <span class="pack" style = "">visdat</span> with description rather than validity, but the data frame comparison, expectation investigation, and missing exploration seem more validity issues than data summaries.
+ 
+ [^janitorpop]: The <span class="pack" style = "">janitor</span> package is notably more popular than any of the other packages.
+ 
+ [^discrete_exceptions]: The only times I do this is with an already discrete variable, for example, going from 7 values to 5 values, or coarsening that might be applied in very large data situations for computational efficiency.

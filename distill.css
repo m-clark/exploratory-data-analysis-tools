@@ -83,12 +83,12 @@ blockquote {
 }
 
 em, .emph {
-  color: #0077d6;
+  color: #990024BF;
   font-style: normal;
 }
 
 .pack {
-  color: #990071; /*#AC9CFF #e41a1c*/
+  color: #1f65b7; /*#AC9CFF #e41a1c*/
 }
 
 .func {
