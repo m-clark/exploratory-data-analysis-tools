@@ -46,9 +46,9 @@ rnd = tidyext::rnd
 
 ## Introduction
 
-In R there are many tools available for exploring data.  However, in consulting I still see a lot of people using base R's <span class="func" style = "">table</span> and <span class="func" style = "">summary</span> functions, followed by a lot of work to get the result into a more presentable format.  My own frustrations led to me creating a package ([tidyext](https://m-clark.github.io/tidyext/)) for personal use in this area.  While that suits me fine, there are tools that can go much further with little effort. Recently, Staniak & Biecek @staniak2019landscape wrote an article in the R Journal exploring several of such packages, so I thought I'd try them out for myself, and take others along with me for that ride.
+In R there are many tools available to help you dive in and explore your data.  However, in consulting I still see a lot of people using base R's <span class="func" style = "">table</span> and <span class="func" style = "">summary</span> functions, followed by a lot of work to get the result into a more presentable format.  My own frustrations led to me creating a package ([tidyext](https://m-clark.github.io/tidyext/)) for personal use in this area.  While that suits me fine, there are tools that can go much further with little effort. Recently, Staniak & Biecek @staniak2019landscape wrote an article in the R Journal exploring several of such packages, so I thought I'd try them out for myself, and take others along with me for that ride.
 
-Note that these are first impressions, I haven't really dived deeply into any of the packages, and may be missing some things. But that is also part of the point for this sort of thing.  These aren't modeling packages, and we have a good idea of what we want in EDA, so these should be easy to pick up and use.
+Note that these are first impressions, and I haven't really dived deeply into any of the packages, and may be missing some key features (apologies to the package authors!). But that is also part of the point for this sort of thing.  These aren't modeling packages, and we have a good idea of what we want in EDA, so these should be easy to pick up and use.
 
 ## Packages
 
@@ -120,8 +120,8 @@ Here is my criteria for selection:
 - Relatively more widely used
 - I've used it before and want to revisit it
 - I've heard of it before and want to try it
-- I'm familiar with the package author's work
-- Appears to be in active development (especially on GitHub) according to modern programming standards
+- I'm familiar with the package author's work elsewhere
+- The pacakge appears to be in active development (especially on GitHub) according to modern programming standards
 - Good documentation
 
 Things I'm not as concerned about:
@@ -147,7 +147,7 @@ Staniak & Biecek note two general phases of data exploration, each with specific
 
 In the first place, I will focus on tools for understanding, particularly description and validity, as they refer to exploration tasks solely as visualization, which is a perk, but something I'm more inclined to do myself.
 
-I'm definitely less interested in the preparation.  'Cleaning' in the article refers to mean/median imputation, something I've never bothered to do for reasons that have been noted in the statistical literature for a very long time.  The other transformations are easy, and probably should be explicitly documented in your code.  Furthermore, in creating derived attributes, things like category merging and standardization depend on the subset of the data used, so it would probably be better to be more explicit than automatic.  Also, if things like an automated PCA is viable for your situation, it probably is very simple data (i.e. all variables of the same type), in which case, most of these tools probably won't add much value to you anyway.
+I'm definitely less interested in the preparation though I will speak about it more towards the end.  'Cleaning' in the article refers to mean/median imputation, something I've never bothered to do for reasons that have been noted in the statistical literature for a very long time.  The other transformations are easy, and probably should be more explicitly documented in your code.  Furthermore, in creating derived attributes, things like category merging and standardization depend on the subset of the data used, so it would probably be better to be more explicit than automatic.  Also, if things like an automated PCA is viable for your situation, it probably is very simple data (i.e. all variables of the same type), in which case, most of these tools probably won't add much value to you anyway.
 
 So with that in mind here are the ones I will explore (in alphabetical order):
 
@@ -161,7 +161,8 @@ So with that in mind here are the ones I will explore (in alphabetical order):
 
 ## The Data
 
-I've chosen the heart_disease data available from the [UCI repository](https://archive.ics.uci.edu/ml/datasets/Heart+Disease) (object name `hd`). It contains a mixture of data types but isn't too unweildy, as it's already been cleaned and has few columns.  I've additionally added some random missingness, and created an `hd_sample` which has only a couple columns to cut down on the display.
+I've chosen the heart disease data originally available from the [UCI repository](https://archive.ics.uci.edu/ml/datasets/Heart+Disease) (object name `hd`). It contains a mixture of data types but isn't too unweildy, as it's already been cleaned and has few columns (it's from my [noiris package](https://github.com/m-clark/noiris)).  For our purposes, I've additionally added some random missingness, and created an `hd_sample` which has only a couple columns to cut down on the display.
+
 
 ```{r prep-data}
 hd = noiris::heart_disease
@@ -184,7 +185,7 @@ hd = as_tibble(hd_mat) %>%
   ) 
 
 hd_sample = hd %>% 
-  select(age, cholesterol, resting_bp, sex, chest_pain_type)
+  select(age, cholesterol, resting_bp, sex, chest_pain_type, heart_disease)
 
 hd %>% 
   DT::datatable(options = list(dom = 'tp', scrollX = T), rownames = F)
@@ -197,14 +198,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Data Description
 
-For data description
-dimensions variables number
-variables variable type
-meta-data size in RAM
+For data description, we are interested in things like, dimensions of the data,  variable types, and maybe even meta
+meta-data like the object's size in RAM.  I also add univariate data summaries as it's something you'd always want to know and usually report, though these are thought of as 'data exploration' in the article's delineation.
 
 ### Preliminary
 
-To give a sense of what my preference is, consider my own functions. The following actually calls a separate numerical summary function as well as a categorical variable function, and both return 'tidy' data frames that can immediately be used for presentation (e.g. kableExtra) and visualization (e.g. ggplot2), or drilling down to only selections of the output.
+To give a sense of what my preferences are, consider my own functions. The following actually calls a separate numerical summary function as well as a categorical variable function, and both return 'tidy' data frames that can immediately be used for presentation (e.g. via <span class="pack" style = "">kableExtra</span>) and visualization (e.g. <span class="pack" style = "">ggplot2</span>), or drilling down to only selections of the output.
 
 ```{r tidyext}
 library(tidyext)
@@ -219,15 +218,15 @@ hd %>%
   select(age, sex, heart_disease) %>% 
   describe_all(
   digits = 2,
-  include_NAcat = FALSE,
+  include_NAcat = FALSE,   # don't include NA as a category
+  include_numeric = TRUE,  # allows numeric variables with few levels given in max_levels argument as categorical
   max_levels = 3,
-  include_numeric = TRUE,  # allows numeric variables with few levels
   sort_by_freq = TRUE,
   extra = TRUE
 )
 ```
 
-For grouped output, I can use the underlying functions.  Here we look at summaries for numerical variables.
+For grouped output, I can use the underlying functions.  Here we look at summaries for a couple numerical variables by sex.
 
 ```{r numby}
 hd %>% 
@@ -255,12 +254,12 @@ describe_all_num(hd) %>%
   kableExtra::kable()
 ```
 
-These serve most of my needs for initial peeking at the data.  They return a tibble/data.frame that makes for easy presentation and visualization.  The underlying code uses tidyverse and mostly adheres to standard programming conventions.  This is the same sort of thing I'm looking for.
+These functions serve most of my needs for initial peeking at the data.  They return a tibble/data.frame class object that makes for easy presentation and visualization.  The underlying code uses the widely used <span class="pack" style = "">tidyverse</span> packages, and mostly adheres to standard programming conventions.  This is the same sort of thing I'm looking for.
 
 
 ### arsenal
 
-We begin alphabetically with the <span class="pack" style = "">arsenal</span> package.  Here we use tableby for a generic summary as well as grouped summary. The result is markdown, so for presentation in an R Markdown document, one must use the chunk option `results='asis'`.
+We begin alphabetically with the <span class="pack" style = "">arsenal</span> package.  Here we use <span class="func" style = "">tableby</span> for a generic summary as well as grouped summary. The result is markdown, so for presentation in an R Markdown document, one must use the chunk option `results='asis'`.
 
 ```{r arsenal-table-by, echo = T, results='asis'}
 library(arsenal)
@@ -273,7 +272,7 @@ hd_sample %>%
   summary()
 ```
 
-Here is an example of categorical-only output using freqlist.
+Here is an example of categorical-only output using <span class="func" style = "">freqlist</span>.
 
 ```{r arsenal-cats, results='asis'}
 with(hd, table(sex, chest_pain_type)) %>% 
@@ -287,7 +286,7 @@ Other options include a function for doing pairwise comparisons for a repeated m
 
 #### Pros
 
-The tableby summary is essentially a 'Table 1', which is an unfortunately named display of descriptive stats for a sample of a given study[^tableone]. My clients often want that, and I've actually used a package specifically geared towards that just to save me the headache (tableOne), so I definitely find that aspect useful.  However, Table 1's almost invariably have needless statistical output or analysis, and are not a model for reporting that I would choose to go for.  As you can see, the layout is not going to be viable for more than a few variables, though it is common practice to present them that way in journal articles regardless of verbosity/legibility.
+The <span class="func" style = "">tableby</span> summary is essentially a 'Table 1', which is an unfortunately named display of descriptive stats for a sample of a given study[^tableone]. My clients often want that, and I've actually used a package specifically geared towards providing it just to save me the headache (<span class="pack" style = "">tableOne</span>), so I definitely find that aspect useful.  However, Table 1's almost invariably have needless statistical output or analysis, and are not a model for reporting that I would choose to go for.  As you can see, the layout is not going to be viable for more than a few variables, though it is common practice to present them that way in journal articles regardless of verbosity/legibility.
 
 #### Issues
 
@@ -296,7 +295,7 @@ I'm not thrilled with markdown output, as I have little control over it, but it'
 
 ### DataExplorer
 
-Now we move to <span class="pack" style = "">DataExplorer</span>.  Let's introduce the package with the introduce function.  I already like this, as it provides good info that extends what you'd get with str or glimpse.
+Now we move to <span class="pack" style = "">DataExplorer</span>.  Let's introduce the package with the <span class="func" style = "">introduce</span> function.  I already like this, as it provides good info that extends what you'd get with str or glimpse.
 
 ```{r data-explorer-introduce}
 library(DataExplorer)
@@ -316,19 +315,19 @@ plot_str(list(hd = hd, gapminder = gapminder_2019))
 ```
 
 
-We can focus on the missingness, which is nice, but I don't find a use for bar simple bar charts, as they actually make the single row of information harder to parse.
+We can focus on the missingness, which is nice, but I don't find a use for bar simple bar charts, as they actually make what is only a single row of information harder to parse, and without any visual interest.
 
 ```{r data-explorer-plot_missing}
 plot_missing(hd_sample)
 ```
 
-It can also plot distributions, e.g. bar and histograms, for the actual values of the categorical/discrete variables.
+<span class="pack" style = "">DataExplorer</span> can also plot distributions, e.g. bar and histograms, for the actual values of the categorical/discrete variables.
 
 ```{r data-explorer-plot_bar}
 plot_bar(hd)
 ```
 
-But this sort of thing only takes a couple lines of ggplot to do on your own, which you can then customize far more easily.
+But this sort of thing only takes a couple lines of ggplot to do on your own, which you can then customize far more easily. At least <span class="pack" style = "">DataExplorer</span> can save you the trouble and sorts the result in an ordered fashion by default.
 
 ```{r data-explorer-plot_intro-ggplot}
 hd %>% 
@@ -341,7 +340,7 @@ hd %>%
 ```
 
 
-Similarly there are QQ plots, scatterplots and more. I always try to get people to try correlation plots in lieu of large correlation matrices, and <span class="pack" style = "">DataExplorer</span> provides this.  The nice thing is that it will automatically create indicator variables for levels of categorical variables, but beyond that there are issues.   For one, it's diagonal is reversed from the typical presentation of correlation matrices. If you don't drop the missing, the plot isn't very useful, because it will include NA as a factor level, but to its credit <span class="pack" style = "">DataExplorer</span> has an option to only focus on continuous or discrete output. In addition, 'centered' is a rather choice for alignment of the x axis in my opinion, so this would take additional work to make presentable.
+Similarly there are QQ plots, scatterplots and more. I always try to get people to try correlation plots in lieu of large correlation matrices, and <span class="pack" style = "">DataExplorer</span> provides this.  The nice thing is that it will automatically create indicator variables for levels of categorical variables, but beyond that there are issues.   For one, it's diagonal is reversed from the typical presentation of correlation matrices. If you don't drop the missing, the plot isn't as useful, because it will include NA as a factor level, but to its credit <span class="pack" style = "">DataExplorer</span> has an option to only focus on continuous or discrete output. In addition, 'centered' is a rather odd choice for alignment of the x axis in my opinion, so this would take additional work to make presentable.
 
 ```{r data-explorer-plot_corr}
 plot_correlation(
@@ -356,12 +355,11 @@ There are packages that do this specifically, such as <span class="pack" style =
 ```{r visibly-corrheat}
 hd %>% 
   select_if(is.numeric) %>% 
-  select(-id) %>% 
   cor(use = 'pair') %>% 
   visibly::corr_heat()
 ```
 
-If the various options of output, or only some of them, appeals to you, they can all be nicely wrapped up in an automatic report. Various settings for each type of output can be set with an additional function (configure_report) or just passing a list of arguments, including which functions to use, ggplot2 theme, etc.  You can see the report [here]().
+If the various options of output, or only some of them, appeal to you, they can all be nicely wrapped up in an automatic report. Various settings for each type of output can be set with an additional function (configure_report) or just passing a list of arguments, including which functions to use, ggplot2 theme, etc.  You can see the report [here]().
 
 <!-- ADD LINK -->
 
@@ -378,13 +376,15 @@ create_report(
 
 #### Pros
 
-I think many would like at least some functionality in <span class="pack" style = "">DataExplorer</span>, as well as many of the visualizations.  The ease with which to generate a report should also be sufficient for anyone's personal use, and with some tweaking, presentation to others.  It also uses data.table under the hood, so likely can handle large data with efficiency.
+I think many would like at least some functionality in <span class="pack" style = "">DataExplorer</span>, as well as many of the visualizations.  The ease with which to generate a report should also be sufficient for anyone's personal use, and with some tweaking, presentation to others.  It also uses <span class="pack" style = "">data.table</span> under the hood, so likely can handle large data with efficiency.
 
 Not covered here, but <span class="pack" style = "">DataExplorer</span> also has functionality for feature processing and engineering, for example, collapsing sparse categories, dummy coding, etc.
 
 #### Issues
 
 The issues I have are pretty minor with this one aside from unnecessary statistical analysis and visualization choices.  I would also recommend `pryr::object_size` rather than base R's function.
+
+
 
 ### SmartEDA
 

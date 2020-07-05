@@ -47,7 +47,7 @@ monthly_stats = cran_downloads_pkgs %>%
   ungroup() %>%
   arrange(year, month) %>%
   mutate(
-    year_mo = ordered(glue::glue('{year}-{month}'))
+    year_mo = ordered(glue::glue('{year}-{month}'), levels = unique(glue::glue('{year}-{month}')))
   )
 
 saveRDS(monthly_stats, file = 'data/monthly_stats.rds')
