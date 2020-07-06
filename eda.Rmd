@@ -388,21 +388,21 @@ The issues I have are pretty minor with this one aside from unnecessary statisti
 
 ### SmartEDA
 
-I wanted to look at the <span class="pack" style = "">SmartEDA</span> package because the figure in the article was of a clean report.  Let's start our exploration with the basic ExpData function
+I wanted to look at the <span class="pack" style = "">SmartEDA</span> package because the figure in the article was of a clean report.  Let's start our exploration with the basic <span class="func" style = "">ExpData</span> function.
 
 ```{r smarteda-expdata}
 library(SmartEDA)
 ExpData(hd)
 ```
 
-We can look at ExpNumStat to get some basic stats for numeric variables.
+We can look at <span class="func" style = "">ExpNumStat</span> to get some basic stats for numeric variables.
 
 ```{r smarteda-expnumstat}
 ExpNumStat(hd, round = 1)
 ```
 
 
-We can look at ExpNumStat to get some basic stats for grouped output also, and set various options.
+We can look at <span class="func" style = "">ExpNumStat</span> to get some basic stats for grouped output also, and set various options.
 
 ```{r smarteda-expnumstat-opts}
 ExpNumStat(
@@ -434,16 +434,16 @@ As there was with numeric variables, there is also visualization for the categor
 ExpCatViz(hd_sample) 
 ```
 
-As far as reporting, <span class="pack" style = "">SmartEDA</span> also provides functionality.
+As far as reporting, <span class="pack" style = "">SmartEDA</span> also provides this functionality.  There are some options you can fiddle with, like using your own template, changing the default theme, etc. 
 
 
 <!-- ADD LINK -->
 
 ```{r smarteda-ExpReport, eval = F}
 ExpReport(
-  hd %>% select(-id),
-  theme = visibly::theme_clean(),
-  op_dir = 'other_docs/',
+  hd,
+  theme   = visibly::theme_clean(),
+  op_dir  = 'other_docs/',
   op_file = 'smarteda.html'
 )
 ```
@@ -456,12 +456,12 @@ ExpReport(
 
 #### Issues
 
-A lot of this isn't very useful to me, such as parallel coordinate plots, 'outlier' analysis, etc.  I'm not crazy about the naming conventions, both for the functions and arguments (every single function begins with `Exp`, so why use it?). The default color schemes for some output is simply not viable for presentation, and the report doesn't really have any options for controlling the output like <span class="pack" style = "">DataExplorer</span> did.
+A lot of this isn't very useful to me, such as parallel coordinate plots, 'outlier' analysis, etc.  I'm not crazy about the naming conventions, both for the functions and arguments (every single function in the package begins with `Exp`). The default color schemes for some output is simply not viable for presentation, and the report doesn't really have any options for controlling the output like <span class="pack" style = "">DataExplorer</span> did. I alos had issues with attempting to get it to work outside of the current working directory for the initial document creation. And changing the `sn` or `sc` options, which I'm not sure why I would only want a sample of plots rather than specifying which plots I'd want specifically, didn't appear to actually change the resulting document.
 
 
 ### summarytools
 
-The <span class="pack" style = "">summarytools</span> package provides four main functions to work with, but I'm going to skip those and go straight to the tool that uses the key summary functions and puts it into a very nice presentation.
+The <span class="pack" style = "">summarytools</span> package provides four main functions to work with, but I'm going to skip those and go straight to the tool that uses those key functions and puts their results into a very nice presentation.
 
 
 ```{r summarytools-dfsummary, results='asis', cache.rebuild=F}
@@ -479,9 +479,9 @@ dfSummary(
 )
 ```
 
-This is exactly what I want- basic, not overwhelming and redundant information, a usable data.frame, simple visuals to enhance the output without adding to the total information you have to parse (and which can be turned off), and basic categorical information. In one function, I have pretty much all I'd need, but with control to tweak as necessary.
+This is exactly what I want- basic, not overwhelming and redundant information, a usable data frame object, simple visuals to enhance the output without adding to the total information you have to parse (and which can be turned off), and basic categorical information. In one function, I have pretty much all I'd need, but with control to tweak as necessary.
 
-```{r summarytools-dfsummary-group-by, results='asis', cache.rebuild=F}
+```{r summarytools-dfsummary-group-by, results='asis', cache.rebuild=F, fig.path='/tmp'}
 library(summarytools)
 
 hd_sample %>% 
@@ -494,18 +494,18 @@ hd_sample %>%
     style = "grid",
     graph.magnif = .33,
     valid.col = FALSE,
-    tmp.img.dir = "img"
+    tmp.img.dir = "/tmp"
   )
 ```
 
 
 #### Pros
 
-The summary tools package provides a single function that produces a ready-to-present table within whatever document I'm already using. Very nice!
+The <span class="pack" style = "">summarytools</span> package provides a single function that produces a ready-to-present table within whatever document I'm already using. Very nice!
 
 #### Issues
 
-The only nitpicky stuff I have with this package is that the <span class="func" style = "">ctable</span> function isn't useful to me, and some of the numeric description is not really necessary. 
+The only nitpicky stuff I have with this package is that the <span class="func" style = "">ctable</span> function isn't useful to me, and some of the numeric description is not really necessary. I had issues with the trying to use the suggested `tmp` directory for the image files, but found it easier to just use a project folder.
 
 
 
