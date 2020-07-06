@@ -198,8 +198,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Data Description
 
-For data description, we are interested in things like, dimensions of the data,  variable types, and maybe even meta
-meta-data like the object's size in RAM.  I also add univariate data summaries as it's something you'd always want to know and usually report, though these are thought of as 'data exploration' in the article's delineation.
+For *data description*, we are interested in things like, dimensions of the data,  variable types, and maybe even meta
+meta-data like the object's size in RAM.  I also add univariate data summaries as it's something you'd always want to know and usually report, though these are thought of as *data exploration* in the article's delineation.
 
 ### Preliminary
 
@@ -257,6 +257,7 @@ describe_all_num(hd) %>%
 These functions serve most of my needs for initial peeking at the data.  They return a tibble/data.frame class object that makes for easy presentation and visualization.  The underlying code uses the widely used <span class="pack" style = "">tidyverse</span> packages, and mostly adheres to standard programming conventions.  This is the same sort of thing I'm looking for.
 
 
+
 ### arsenal
 
 We begin alphabetically with the <span class="pack" style = "">arsenal</span> package.  Here we use <span class="func" style = "">tableby</span> for a generic summary as well as grouped summary. The result is markdown, so for presentation in an R Markdown document, one must use the chunk option `results='asis'`.
@@ -283,14 +284,15 @@ with(hd, table(sex, chest_pain_type)) %>%
 Other options include a function for doing pairwise comparisons for a repeated measure[^nopair], comparing datasets, and doing a bunch of bivariate regressions.
 
 
-
 #### Pros
 
 The <span class="func" style = "">tableby</span> summary is essentially a 'Table 1', which is an unfortunately named display of descriptive stats for a sample of a given study[^tableone]. My clients often want that, and I've actually used a package specifically geared towards providing it just to save me the headache (<span class="pack" style = "">tableOne</span>), so I definitely find that aspect useful.  However, Table 1's almost invariably have needless statistical output or analysis, and are not a model for reporting that I would choose to go for.  As you can see, the layout is not going to be viable for more than a few variables, though it is common practice to present them that way in journal articles regardless of verbosity/legibility.
 
+
 #### Issues
 
 I'm not thrilled with markdown output, as I have little control over it, but it's fine.  Also, the default layout is not so succinct, and it appears it's trying to emulate SAS functions, which are not models for presentation in my opinion. One can use a function to write the output of a single table to html, but I'd rather it just be amenable to the document I'm already creating, or create a report for me of all tables.  Lastly, I'm not crazy about using the <span class="func" style = "">summary</span> function to get the output.  The underlying list objects are not 'print ready', so using summary as an argument with default of TRUE would make more sense to me design-wise.
+
 
 
 ### DataExplorer
@@ -380,6 +382,7 @@ I think many would like at least some functionality in <span class="pack" style 
 
 Not covered here, but <span class="pack" style = "">DataExplorer</span> also has functionality for feature processing and engineering, for example, collapsing sparse categories, dummy coding, etc.
 
+
 #### Issues
 
 The issues I have are pretty minor with this one aside from unnecessary statistical analysis and visualization choices.  I would also recommend `pryr::object_size` rather than base R's function.
@@ -449,14 +452,15 @@ ExpReport(
 ```
 
 
-
 #### Pros
 
 <span class="pack" style = "">SmartEDA</span> is fairly intuitive to use. It returns a data frame, and some of the less verbose output is quite ready to go.  It can also generate a report in automatic fashion.
 
+
 #### Issues
 
 A lot of this isn't very useful to me, such as parallel coordinate plots, 'outlier' analysis, etc.  I'm not crazy about the naming conventions, both for the functions and arguments (every single function in the package begins with `Exp`). The default color schemes for some output is simply not viable for presentation, and the report doesn't really have any options for controlling the output like <span class="pack" style = "">DataExplorer</span> did. I alos had issues with attempting to get it to work outside of the current working directory for the initial document creation. And changing the `sn` or `sc` options, which I'm not sure why I would only want a sample of plots rather than specifying which plots I'd want specifically, didn't appear to actually change the resulting document.
+
 
 
 ### summarytools
@@ -503,6 +507,7 @@ hd_sample %>%
 
 The <span class="pack" style = "">summarytools</span> package provides a single function that produces a ready-to-present table within whatever document I'm already using. Very nice!
 
+
 #### Issues
 
 The only nitpicky stuff I have with this package is that the <span class="func" style = "">ctable</span> function isn't useful to me, and some of the numeric description is not really necessary. I had issues with the trying to use the suggested `tmp` directory for the image files, but found it easier to just use a project folder.
@@ -512,84 +517,94 @@ The only nitpicky stuff I have with this package is that the <span class="func" 
 
 ## Data Validity
 
-As a reminder, data validity is more about providing checks on the data rather than summarizing it per se.  These are packages more geared toward spotting or dealing with data issues.
+As a reminder, *data validity* is more about providing checks on the data rather than summarizing it per se.  These are packages more geared toward spotting or dealing with data issues.
+
+
 
 ### dataMaid
 
-The primary utility of <span class="pack" style = "">dataMaid</span> is examination of data consistency, but it will also provide basic summaries too.  In the end it creates a report.  I came across this via the author's presentation at the Ann Arbor R User Group and have actually used it before.  The result can be found [here](), though here is a screenshot.
+The primary utility of <span class="pack" style = "">dataMaid</span> is examination of data consistency, but it will also provide basic summaries too.  In the end it creates a useful report as well.  I came across this via the author's presentation at the Ann Arbor R User Group, and have actually used it before for a project with success.  The result can be found [here](), though here is a screenshot.
 
-```{r datamaid-show, echo=FALSE}
+<!-- ADD LINK -->
+
+```{r datamaid-report, eval=FALSE}
+library(dataMaid)
+
+dataMaid::makeDataReport(
+  hd,
+  output = 'html',
+  file = 'other_docs/dataMaid_report',
+  replace = TRUE,
+  maxDecimals = 1
+) 
+```
+
+
+```{r datamaid-show, echo=FALSE, out.width='800px'}
 knitr::include_graphics('img/dataMaid_report.png')
 ```
 
 
-It provides an overall summary of the data frame including variable types, unique values, missing percentage, and potential problems.  Problems mostly regard outliers, which is fine to inspect, but arbitrarily set.
-
-
-
-<!-- ADD LINK -->
-
-```{r datamaid-report, eval = FALSE}
-library(dataMaid)
-
-makeDataReport(
-  hd,
-  ouput = 'html',
-  file = 'other_docs/datamaid_report.Rmd',
-  replace = TRUE
-)
-```
-
+As you can see, it provides an overall summary of the data frame including variable types, unique values, missing percentage, and potential problems.  Problems mostly regard outliers, which is fine to inspect, but arbitrarily set.
 
 
 #### Pros
 
-<span class="pack" style = "">dataMaid</span> is highly customizable, but the default is already a great way to get a good sense of whether your data is doing what it's supposed to do.  In the past I've found it be slow in rendering the output
+<span class="pack" style = "">dataMaid</span> is highly customizable, but the default is already a great way to get a good sense of whether your data is doing what it's supposed to do.  
+
 
 #### Issues
 
-I couldn't get anything but a pdf document even though I clearly specified html as per the documentation, so I'm not sure what's going on there..  The default outlier check, while better than most would do, seemed too sensitive, but this is nitpicky.
+I initially couldn't get anything but a pdf document even though I clearly specified `html` as per the documentation, so I'm not sure what's going on there, but I eventually sorted it out.  The default outlier check, while better than most would do, seemed too sensitive, but this is nitpicky. In the past I've found it be slow in rendering the output for a larger data set, but this isn't something you would usually have to run more than once after getting your options squared away.
+
+
 
 ### janitor
 
 Sadly, I still regularly receive data from Excel (and SPSS), which means I have to worry about things that I shouldn't have to worry about, like whether dates will actually be treated appropriately, if the column names are usable, or whether the imported file contains 10000 empty rows because someone accidentally hit the space bar.  
 
-The <span class="pack" style = "">janitor</span> package provides a few simple tools that many will probably find useful at some point, and I regularly use its remove_empty function after importing anything from Excel.  As an example I'll add an empty column with an Excel-like name, and a duplicated row.
+The <span class="pack" style = "">janitor</span> package provides a few simple tools that many will probably find useful at some point, and I regularly use its <span class="func" style = "">remove_empty</span> function after importing anything from Excel.  As an example I'll add an empty column with an Excel-like name, a duplicated row, and a useless column with a constant value (all very typical in Excel files I receive).
 
 ```{r janitor-cleannames}
 library(janitor)
 
 hd2 = hd
 
-hd2$`test this - ridiculous (name)` = NA
-hd2$`why.is-this_here` = 'same value everywhere'
-hd2[nrow(hd2) + 1,] = hd2[1,]
+hd2$`test this - ridiculous (name)` = NA           # a terribly formatted name that has no values
+hd2$`why.is-this_here` = 'same value everywhere'   # constant column
+hd2[nrow(hd2) + 1,] = hd2[1,]                      # add a duplicated row
 
 hd2 %>% 
   clean_names() %>% 
   colnames()
 ```
 
-And here is the remove_* functionality.
+And here is the `remove_*` functionality.
 
 ```{r janitor-removempty.}
-hd2 %>% 
+hd3 = hd2 %>% 
   remove_empty() %>% 
-  remove_constant() %>% 
-  colnames()
+  remove_constant() 
+
+# useless columns/rows removed 
+colnames(hd3)
+c(nrow(hd2), nrow(hd3))
 ```
 
 
-Just a couple little things like that are very useful.  Otherwise, there is functionality for dates, tables, etc. that some might find useful in a pinch, but  probably will have more with the other summary functions in packages seen before, or more advanced users may simply just use lubridate etc.
+Just a couple little things like that are very useful.  Otherwise, there is functionality for dates, tables, etc. that some might find useful in a pinch, but one would probably will have more with the other summary functions in packages we've demoed, and more advanced users may simply just use <span class="pack" style = "">lubridate</span>, <span class="pack" style = "">stringr</span> and similar packages directly.
 
 
 #### Pros
 
 Provides useful functionality not seen in the other packages. 
 
+
 #### Issues
 
 Not a whole lot going on here relative to some of the other packages, but what is there is likely to be useful to many.
+
+
 
 ### visdat
 
@@ -606,7 +621,7 @@ We can look at variable types along with the missingness.  I like the integer/do
 vis_guess(hd)
 ```
 
-Visualization of the correlations, default is pairwise.  This is probably the cleanest we've seen so far of this type of plot, but there is no way to order it meaningfully.
+We can visualize the correlations as we did with <span class="pack" style = "">DataExplorer</span>, and default is pairwise.  This is one of the cleaner correlation plots I've come across, but there is no way to order it meaningfully.
 
 ```{r visdat-cor}
 vis_cor(hd %>% select_if(is.numeric))
@@ -621,7 +636,7 @@ hd %>%
   vis_expect(expectation =  ~ .x == 'male')
 ```
 
-We can also compare whole data sets. Here the differences are with missing values in one and not the other.
+We can also compare whole data sets. Here the differences are with missing values in one and not the other[^arsenalcomparedf]. 
 
 ```{r visdat-compare}
 hd2 = noiris::heart_disease %>% 
@@ -638,21 +653,25 @@ vis_compare(
 
 #### Pros
 
-This package adds some useful functionality we haven't seen.  In addition, the underlying code adheres to open science standards.
+This package adds some useful functionality we haven't seen.  In addition, the underlying code adheres to open science standards.  There is a complementary package [naniar](http://naniar.njtierney.com/) for more ways to deal with missing data.
+
 
 #### Issues
 
-This isn't for numeric description, so can only supplement typical EDA as we've had before. You may have to do some pre-processing for some functions unlike with other tools (e.g. subsetting to numeric).
+This isn't for numeric description, so can only supplement typical EDA as we've had before. You may have to do some pre-processing for some functions unlike with other tools (e.g. subsetting to numeric).  But these are minor issues at best given the package's purpose.
 
 
 
 ## Data Cleaning and Transformations
 
-As mentioned previously, I'm not interested in using these packages for doing this, and based on Staniak and Biecek, only a couple of them provide this, <span class="pack" style = "">DataExplorer</span> being the only package that we've explored here.  Mean/median/mode imputation is a great way to attenuate correlation, so I'm not interested in that.  I don't even know what an 'outlier' is outside of a modeling framework so I'm definitely not interested in doing something about those values based on a univariate analysis. Discretizing numeric variables should almost never be done[^discrete_exceptions], so that functionality is not desirable. And between base R functions like <span class="func" style = "">scale</span> and <span class="func" style = "">log</span>, or the <span class="func" style = "">rescale</span> function from <span class="pack" style = "">scales</span>, lumping factors and similar via <span class="pack" style = "">forcats</span>, I don't really need another package for this sort of thing.
+As mentioned previously, I'm not interested in using these packages for doing this, and based on Staniak and Biecek, only a couple of them provide this, <span class="pack" style = "">DataExplorer</span> being the only package that we've explored here.  Mean/median/mode imputation is a great way to attenuate correlation, so I'm not interested in doing that.  I don't even know what an 'outlier' is outside of a modeling framework, so I'm definitely not interested in doing something about extreme values based on a univariate analysis[^outliers]. Discretizing numeric variables should almost never be done[^discrete_exceptions], so that functionality is not desirable. And between base R functions like <span class="func" style = "">scale</span> and <span class="func" style = "">log</span>, or the <span class="func" style = "">rescale</span> function from <span class="pack" style = "">scales</span>, lumping factors and similar via <span class="pack" style = "">forcats</span>, I don't really need another package for this sort of thing.
 
 ## Summary
 
-Here is a probably inaccurate list of features I made based on quick inspections.
+
+Staniak & Biecek @staniak2019landscape provide a nice summary of many packages that can be used for *automated exploratory data analysis*.  I wanted to explore and demonstrate some of these in more detail.  My impression is that many of these packages have notably useful functionality, though a lot of it may be overlapping, or superfluous from a more serious analytical standpoint.  In addition, I personally wouldn't use the word ***automated*** to describe most of the functionality for most of these packages, as multiple specific functions, possibly with different options for each, would need to be used to ultimately generate a data driven product.  That's not necessarily a bad thing, as one should know what's in the data if you want to make a decision based on it.
+
+Here is a rough list of features I made based on quick inspections.
 
 ```{r sumtable, eval = T, echo=FALSE}
 tibble(
@@ -711,11 +730,11 @@ tibble(
     emo::ji('thumbsup')
   )
 ) %>%
-  kable_df(align = 'lcccccc')
+  kable_df(align = 'lcccccc', caption = 'See Table 4 in Staniak & Biecek for more details.')
 ```
 
-- Ready to use output: supplies a data frame or ggplot class object.
-- Code Quality: uses type-safe checks, active development (notable recent activity and response to issues), explicitly uses some standard (e.g. open sci), but mostly my own personal opinion.
+- Ready to use output: supplies a data frame or ggplot class object that are essentially ready for presentation.
+- Code Quality: uses type-safe checks, active development (notable recent activity and response to issues), explicitly uses some standard (e.g. [rOpenSci](https://ropensci.org/)), but mostly my own personal opinion after a very quick glance at a very small portion of the underlying code.
 - Visualization: includes at least some visualization aspect.
 - Report Generation: has a function to report a separate html or pdf file of multiple results
 - Dedicated Website: more than just a github repo, has a website with vignettes.  All of these packages are on GitHub, so with <span class="pack" style = "">pkgdown</span> there is no reason not to have this.
@@ -723,22 +742,40 @@ tibble(
 
 In general I would imagine I'd use <span class="pack" style = "">summarytools</span> or <span class="pack" style = "">DataExplorer</span>, with <span class="pack" style = "">visdat</span> and <span class="pack" style = "">janitor</span> to fill in additional information or help with the data processing.  Interestingly, these also appear to be the most popular packages under consideration[^janitorpop].
 
+
+
+
 ## Links
+
 
 ### Description packages
 
 [arsenal](https://mayoverse.github.io/arsenal/)
+
 [DataExplorer](http://boxuancui.github.io/DataExplorer/)
+
 [SmartEDA](https://daya6489.github.io/SmartEDA/)
+
 [summarytools](https://github.com/dcomtois/summarytools)
+
 
 ### Validation packages
 
 [visdat](http://visdat.njtierney.com/)
+
 [dataMaid](https://github.com/ekstroem/dataMaid)
+
 [janitor](https://sfirke.github.io/janitor/)
 
 ## Exercises
+
+Find a data set you like and do the following. I suggest using a manageable one or some subset so that you don't get an overwhelming amount of output.
+
+- Create an R Markdown file that will produce an html or pdf product 
+- after your initial data import, and clean it with <span class="pack" style = "">janitor</span>
+- use <span class="pack" style = "">visdata</span> to inspect some aspect of it, like missingness
+- use <span class="pack" style = "">dataMaid</span> to do a validity check
+- use <span class="pack" style = "">summarytools</span> to provide an in-document assessment of the data
 
 
 
@@ -752,6 +789,10 @@ In general I would imagine I'd use <span class="pack" style = "">summarytools</s
  
  [^visdescr]: The article by Staniak & Biecek places <span class="pack" style = "">visdat</span> with description rather than validity, but the data frame comparison, expectation investigation, and missing exploration seem more validity issues than data summaries.
  
- [^janitorpop]: The <span class="pack" style = "">janitor</span> package is notably more popular than any of the other packages.
+ [^janitorpop]: The <span class="pack" style = "">janitor</span> package, which was not explored in the original article, is actually notably more popular than any of the other packages.
  
- [^discrete_exceptions]: The only times I do this is with an already discrete variable, for example, going from 7 values to 5 values, or coarsening that might be applied in very large data situations for computational efficiency.
+ [^discrete_exceptions]: The only times I do this is with an already discrete variable, for example, going from 7 values to 5 values, or coarsening that might be applied in very large data situations for computational efficiency. Issues with discretizing are noted [here](biostat.mc.vanderbilt.edu/twiki/bin/view/Main/CatContinuous), and while there are [better ways to do it](http://www.stat.columbia.edu/~gelman/research/unpublished/thirds4.pdf) if you feel you must, you probably won't have seen it done in practice, and the chosen method likely wouldn't hold across repeated data.
+ 
+ [^outliers]: Outliers are an indicator of model weakness/limitation/failure, not a data problem.
+ 
+ [^arsenalcomparedf]: The <span class="pack" style = "">arsenal</span> package also provided this functionality. It's quite verbose, so I didn't show it, but if you need a more in depth comparison it can be recommended.
