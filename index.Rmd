@@ -9,7 +9,6 @@ date: '`r Sys.Date()`'
 # preview: 
 output:
   distill::distill_article:
-    self_contained: false
     toc: true
 css: distill.css
 bibliography: cites.bib
