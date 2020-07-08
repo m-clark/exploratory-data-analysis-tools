@@ -11,8 +11,8 @@ output:
   distill::distill_article:
     self_contained: false
     toc: true
-css: ../distill.css
-bibliography: ../cites.bib
+css: distill.css
+bibliography: cites.bib
 tags: [R, exploratory data analysis, EDA, automated, arsenal, DataExplorer, SmartEDA, summarytools, dataMaid, janitor, visdat]
 ---
 
@@ -361,7 +361,7 @@ hd %>%
   visibly::corr_heat()
 ```
 
-If the various options of output, or only some of them, appeal to you, they can all be nicely wrapped up in an automatic report. Various settings for each type of output can be set with an additional function (<span class="func" style = "">configure_report</span>) or just passing a list of arguments, including which functions to use, ggplot2 theme, etc.  You can see the report [here](https://m-clark.github.io/), but I also show a screenshot.
+If the various options of output, or only some of them, appeal to you, they can all be nicely wrapped up in an automatic report. Various settings for each type of output can be set with an additional function (<span class="func" style = "">configure_report</span>) or just passing a list of arguments, including which functions to use, ggplot2 theme, etc.  You can see the report [here](https://m-clark.github.io/), but I show a screenshot.
 
 <!-- ADD LINK -->
 
