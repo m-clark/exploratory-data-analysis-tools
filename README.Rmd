@@ -14,11 +14,9 @@ knitr::opts_chunk$set(
 ```
 
 
-# IN PROGRESS
-
 ## Exploratory Data Analysis
 
-This is workshop content for exploratory data analysis.  The inspiration is the following:
+This is workshop content for exploratory data analysis.  The inspiration is the following article:
 
 Staniak & Biecek (2019). The Landscape of R Packages for Automated Exploratory Data Analysis. R Journal. ([link](https://journal.r-project.org/archive/2019/RJ-2019-033/index.html))
 

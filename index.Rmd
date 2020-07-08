@@ -13,7 +13,7 @@ output:
     toc: true
 css: distill.css
 bibliography: cites.bib
-tags: [R, exploratory data analysis, EDA, automated, arsenal, DataExplorer, SmartEDA, summarytools, dataMaid, janitor, visdat]
+tags: [R, exploratory data analysis, EDA, automated, arsenal, DataExplorer, SmartEDA, summarytools, dataMaid, janitor, visdat, descriptive statistics, summary]
 ---
 
 ```{r setup, include=FALSE}
