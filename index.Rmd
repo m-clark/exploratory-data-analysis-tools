@@ -158,7 +158,7 @@ So with that in mind here are the ones I will explore (in alphabetical order):
 - <span class="pack" style = "">summarytools</span>
 - <span class="pack" style = "">visdat</span>
 
-## The Data
+## The Example Dataset
 
 I've chosen the heart disease data originally available from the [UCI repository](https://archive.ics.uci.edu/ml/datasets/Heart+Disease) (object name `hd`). It contains a mixture of data types but isn't too unwieldy, as it's already been cleaned and has few columns (it's from my [noiris package](https://github.com/m-clark/noiris)).  For our purposes, I've additionally added some random missingness, and created an `hd_sample` which has only a couple columns to cut down on the display.
 
@@ -195,10 +195,11 @@ hd %>%
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+
 ## Data Description
 
-For *data description*, we are interested in things like, dimensions of the data,  variable types, and maybe even meta
-meta-data like the object's size in RAM.  I also add univariate data summaries as it's something you'd always want to know and usually report, though these are thought of as *data exploration* in the article's delineation.
+For *data description*, we are interested in things like, dimensions of the data,  variable types, and maybe even meta-data, like the object's size in RAM.  I also add univariate data summaries as it's something you'd always want to know and usually report, though these are thought of as *data exploration* in the article's delineation.
 
 ### Preliminary
 
@@ -263,6 +264,7 @@ We begin alphabetically with the <span class="pack" style = "">arsenal</span> pa
 
 ```{r arsenal-table-by, echo = T, results='asis'}
 library(arsenal)
+
 hd_sample %>%
   tableby( ~ ., data = .) %>%
   summary()
@@ -398,6 +400,7 @@ I wanted to look at the <span class="pack" style = "">SmartEDA</span> package be
 
 ```{r smarteda-expdata}
 library(SmartEDA)
+
 ExpData(hd)
 ```
 
@@ -489,8 +492,6 @@ dfSummary(
 This is exactly what I want- basic, not overwhelming and redundant information, a usable data frame object, simple visuals to enhance the output without adding to the total information you have to parse (and which can be turned off), and basic categorical information. In one function, I have pretty much all I'd need, but with control to tweak as necessary.
 
 ```{r summarytools-dfsummary-group-by, results='asis', cache.rebuild=F, fig.path='/tmp'}
-library(summarytools)
-
 hd_sample %>% 
   group_by(sex) %>% 
   dfSummary(
@@ -615,6 +616,7 @@ The package <span class="pack" style = "">visdat</span>[^visdescr] is, as its na
 
 ```{r visdat-missing}
 library(visdat)
+
 vis_dat(hd_sample)
 ```
 
@@ -627,7 +629,9 @@ vis_guess(hd)
 We can visualize the correlations as we did with <span class="pack" style = "">DataExplorer</span>, and default is pairwise.  This is one of the cleaner correlation plots I've come across, but there is no way to order it meaningfully.
 
 ```{r visdat-cor}
-vis_cor(hd %>% select_if(is.numeric))
+hd %>% 
+  select_if(is.numeric) %>% 
+  vis_cor()
 ```
 
 
@@ -743,7 +747,7 @@ tibble(
 - Dedicated Website: more than just a GitHub repo, has a website with vignettes.  All of these packages are on GitHub, so with <span class="pack" style = "">pkgdown</span> there is no reason not to have this.
 
 
-In general I would imagine I'd use <span class="pack" style = "">summarytools</span> or <span class="pack" style = "">DataExplorer</span>, with <span class="pack" style = "">visdat</span> and <span class="pack" style = "">janitor</span> to fill in additional information or help with the data processing.  Interestingly, these also appear to be the most popular packages under consideration[^janitorpop].
+In general I would imagine I'd use <span class="pack" style = "">summarytools</span> or <span class="pack" style = "">DataExplorer</span>, with <span class="pack" style = "">visdat</span> and <span class="pack" style = "">janitor</span> to fill in additional information or help with the data processing.  Interestingly, these also appear to be the most popular packages under consideration[^janitorpop], so it's good to know they are more widely used. Any of them might be useful for your specific needs, particularly if you're willing to invest in some of the more customizable ones, so take a spin with any you like.
 
 
 
