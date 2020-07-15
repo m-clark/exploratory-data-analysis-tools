@@ -28,7 +28,7 @@ Thumbs.db
 
 # Data files (remove/keep as desired)
 .rdata
-Data/
+#Data/
 results/
 *.zip
 

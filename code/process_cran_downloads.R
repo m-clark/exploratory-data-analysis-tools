@@ -12,7 +12,7 @@ pkgs <- list(
   'dlookr',
   'autoEDA',
   'funModeling',
-  'janitor',
+  # 'janitor',
   'visdat',
   'SmartEDA',
   'summarytools',
@@ -23,10 +23,12 @@ pkgs <- list(
   'ExPanDaR'
 )
 
+library(lubridate)
+
 cran_downloads_pkgs <- cran_downloads(
   packages = unlist(pkgs),
   from = '2010-10-10',
-  to = Sys.Date() -
+  to = Sys.Date()-day(Sys.Date())
 ) %>%
   filter(count > 0)
 
@@ -35,8 +37,8 @@ saveRDS(cran_downloads_pkgs, file = 'data/cran_downloads_pkgs.rds')
 monthly_stats = cran_downloads_pkgs %>%
   arrange(date) %>%
   mutate(
-    year    = lubridate::year(date),
-    month   = lubridate::month(date, label = TRUE),
+    year  = year(date),
+    month = month(date, label = TRUE),
     ) %>%
   group_by(package, year, month) %>%
   summarise(monthly_downloads = sum(count)) %>%

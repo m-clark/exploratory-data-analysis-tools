@@ -2,7 +2,7 @@
 ## Exploratory Data Analysis
 
 This is workshop content for exploratory data analysis. The inspiration
-is the following:
+is the following article:
 
 Staniak & Biecek (2019). The Landscape of R Packages for Automated
 Exploratory Data Analysis. R Journal.
@@ -11,3 +11,5 @@ Exploratory Data Analysis. R Journal.
 I was curious about some of these tools for my own use and thought I’d
 make a workshop out of it. The workshop itself will mostly be
 demonstration, allowing the participants to run the code alongside me.
+The website is at:
+<https://m-clark.github.io/exploratory-data-analysis-tools/>
