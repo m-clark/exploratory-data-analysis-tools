@@ -152,6 +152,7 @@ So with that in mind here are the ones I will explore (in alphabetical order):
 - <span class="pack" style = "">arsenal</span>
 - <span class="pack" style = "">DataExplorer</span>
 - <span class="pack" style = "">dataMaid</span>
+- <span class="pack" style = "">gtsummary</span>
 - <span class="pack" style = "">janitor</span> (not explored in the previous article)
 - <span class="pack" style = "">SmartEDA</span>
 - <span class="pack" style = "">summarytools</span>
@@ -392,7 +393,78 @@ I think many would like at least some functionality in <span class="pack" style 
 
 The issues I have are pretty minor with this one aside from unnecessary statistical analysis and visualization choices.  I would also recommend `pryr::object_size` rather than base R's function.
 
+### gtsummary
 
+
+The <span class="pack" style = "">gtsummary</span> package wasn't available when the original article went out, but despite being new, it's seen as a companion to <span class="pack" style = "">gt</span>, which is put out by RStudio and has been around for some time.  It is also attuned to tidy tibbles created by the usual <span class="pack" style = "">tidyverse</span> approach.
+
+```{r gt-tablesum}
+library(gtsummary)
+
+hd %>% 
+  tbl_summary()
+```
+
+This is similar to what we've seen, but I will note that the footnote was automatically generated, saving me the trouble, and it's nice to have a single function essentially give me what I want.  It will also do the 'by' approach, and I show a couple options for tailoring the output.
+
+```{r gt-by}
+hd_sample %>%
+  tbl_summary(
+    by = sex,
+    statistic = list(all_continuous() ~ "{mean} ({p10}, {p90})"),
+    digits = list(age ~ c(2, 1)),  # mean is 2 digits, sd 1
+    label = list(resting_bp ~ 'Resting Blood Press.')
+  )
+```
+
+If we assign the table, we can then use its values inline, which is extremely useful for write-up.
+
+```{r gt-inline}
+tab = hd_sample %>%
+  tbl_summary()
+
+inline_text(tab, variable = age, column = "stat_0")
+```
+
+We would then put something like '`r ` `inline_text(tab, variable = age, column = "stat_0")`' in the actual text we are writing to actually print the result.
+
+Here is an example of some customization options where I include a custom function, rearrange some things, add bold, etc.
+
+```{r gt-style}
+geomean <- function (x, na.rm = TRUE) {
+    if (is.null(nrow(x))) {
+        exp(mean(log(x), na.rm = TRUE))
+    }
+    else {
+        exp(apply(log(x), 2, mean, na.rm = na.rm))
+    }
+}
+
+set_gtsummary_theme(theme_gtsummary_compact())
+
+hd_sample %>%
+  tbl_summary(
+    by = sex,
+    missing = "no",
+    statistic = all_continuous() ~ "{geomean} ({p75}, {p25}) [N = {N_nonmiss}]"
+  ) %>%
+  add_n() %>%
+  bold_labels() %>%
+  italicize_levels() %>% 
+  modify_spanning_header(starts_with("stat_") ~ "**Sex**") 
+```
+
+
+
+
+
+#### Pros
+
+The <span class="pack" style = "">gtsummary</span> package strikes me as a very powerful tool for customized tables that work seamlessly within a tidyverse workflow. It was easy to immediately start using. Not shown, but it also has good support for standard models (e.g. `lm`, `glm`, `survival`, and more). It also appears that there is a lot of customization possible.
+
+#### Issues
+
+There is little not to like here, especially for a package just starting out.  The only quibble I could see is that the notation for some of the customization is not intuitive, but probably something one can get used to.
 
 ### SmartEDA
 
@@ -679,7 +751,7 @@ As mentioned previously, I'm not interested in using these packages for doing th
 ## Summary
 
 
-Staniak & Biecek @staniak2019landscape provide a nice summary of many packages that can be used for *automated exploratory data analysis*.  I wanted to explore and demonstrate some of these in more detail.  My impression is that many of these packages have notably useful functionality, though a lot of it may be overlapping, or superfluous from a more serious analytical standpoint.  In addition, I personally wouldn't use the word ***automated*** to describe most of the functionality for most of these packages, as multiple specific functions, possibly with different options for each, would need to be used to ultimately generate a data driven product.  That's not necessarily a bad thing, as one should know what's in the data if you want to make a decision based on it.
+Staniak & Biecek @staniak2019landscape provide a nice summary of many packages that can be used for *automated exploratory data analysis*.  I wanted to explore and demonstrate some of these in more detail, along with a couple packages that weren't included.  My impression is that many of these packages have notably useful functionality, though a lot of it may be overlapping, or superfluous from a more serious analytical standpoint.  In addition, I personally wouldn't use the word ***automated*** to describe most of the functionality for most of these packages, as multiple specific functions, possibly with different options for each, would need to be used to ultimately generate a data driven product.  That's not necessarily a bad thing, as one should know what's in the data if you want to make a decision based on it, but just be clear that 'automated' doesn't mean you still won't have your work cut out for you.
 
 Here is a rough list of features I made based on quick inspections.
 
@@ -688,6 +760,7 @@ tibble(
   Package = c(
     'arsenal',
     'DataExplorer',
+    'gtsummary',
     'SmartEDA',
     'summarytools',
     'visdat',
@@ -700,11 +773,13 @@ tibble(
     emo::ji('thumbsup'),
     emo::ji('thumbsup'),
     emo::ji('thumbsup'),
+    emo::ji('thumbsup'),
     '',
     emo::ji('thumbsup')
   ),
   `Code Quality` = c(
     '',
+    emo::ji('thumbsup'),
     emo::ji('thumbsup'),
     '',
     '',
@@ -715,6 +790,7 @@ tibble(
   `Visualization` = c(
     '',
     emo::ji('thumbsup'),
+    '',
     emo::ji('thumbsup'),
     emo::ji('thumbsup'),
     emo::ji('thumbsup'),
@@ -724,6 +800,7 @@ tibble(
   `Report Generation` = c(
     '',
     emo::ji('thumbsup'),
+    '',
     emo::ji('thumbsup'),
     '',
     '',
@@ -731,6 +808,7 @@ tibble(
     ''
   ),
   `Dedicated Website` = c(
+    emo::ji('thumbsup'),
     emo::ji('thumbsup'),
     emo::ji('thumbsup'),
     emo::ji('thumbsup'),
@@ -750,7 +828,7 @@ tibble(
 - Dedicated Website: more than just a GitHub repo, has a website with vignettes.  All of these packages are on GitHub, so with <span class="pack" style = "">pkgdown</span> there is no reason not to have this.
 
 
-In general, for my needs I would imagine I'd use <span class="pack" style = "">summarytools</span> or <span class="pack" style = "">DataExplorer</span>, with <span class="pack" style = "">visdat</span> and <span class="pack" style = "">janitor</span> to fill in additional information or help with the data processing.  Interestingly, these also appear to be the most popular packages under consideration[^janitorpop], so it's good to know they are more widely used, though that was a criterion for selection as well. Any of them might be useful for your specific needs, particularly if you're willing to invest in some of the more customizable ones, so take a spin with any you like.
+In general, for my needs I would imagine I'd use <span class="pack" style = "">summarytools</span> or <span class="pack" style = "">DataExplorer</span> for presentation to clients or team members, and <span class="pack" style = "">gtsummary</span> as the workhorse, especially for publication.  In addition, I would likely use <span class="pack" style = "">visdat</span> and <span class="pack" style = "">janitor</span> to fill in additional information or help with the data processing.  Interestingly, some of these also appear to be the most popular packages under consideration[^janitorpop], so it's good to know they are more widely used, though that was a criterion for selection as well. Any of them might be useful for your specific needs, particularly if you're willing to invest in some of the more customizable ones, so take a spin with any you like.
 
 
 
@@ -763,6 +841,8 @@ In general, for my needs I would imagine I'd use <span class="pack" style = "">s
 [arsenal](https://mayoverse.github.io/arsenal/)
 
 [DataExplorer](http://boxuancui.github.io/DataExplorer/)
+
+[gtsummary](http://www.danieldsjoberg.com/gtsummary/index.html)
 
 [SmartEDA](https://daya6489.github.io/SmartEDA/)
 
